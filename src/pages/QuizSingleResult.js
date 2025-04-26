@@ -1,0 +1,66 @@
+import React, { useState, useEffect } from 'react';
+import { Container, Card, Table } from 'react-bootstrap';
+import Navbar from "../layouts/SingleNavbar";
+import { getAllClasses } from '../services/QuizResultService';
+
+const QuizSingleResult = () => {
+  const [classes, setClasses] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await getAllClasses();
+        setClasses(result);
+      } catch (err) {
+        console.error("Failed to fetch data:", err);
+      }
+    };
+    fetchData();
+  }, []);
+
+  return (
+    <>
+      <Navbar />
+      <Container className="mt-5 pt-5">
+        <Card className="shadow-sm p-3 p-md-4">
+          <h4 className="mb-4 text-primary text-center text-md-start">
+            📊 Quiz Results Summary
+          </h4>
+
+          {classes.length === 0 ? (
+            <p className="text-muted text-center">No classes added yet.</p>
+          ) : (
+            <div className="table-responsive">
+              <Table striped bordered hover className="align-middle text-center small">
+                <thead className="table-light">
+                  <tr>
+                    <th>#</th>
+                    <th>Class Name</th>
+                    <th>Class Number</th>
+                    <th>Total Marks</th>
+                    <th>Obtained Marks</th>
+                    <th>Merit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {classes.map((cls, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{cls.className}</td>
+                      <td>{cls.classNumber}</td>
+                      <td>{cls.totalMarks}</td>
+                      <td>{cls.obtainMarks}</td>
+                      <td>{cls.merit}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+          )}
+        </Card>
+      </Container>
+    </>
+  );
+};
+
+export default QuizSingleResult;
