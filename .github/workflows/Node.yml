@@ -64,8 +64,8 @@ jobs:
             -o StrictHostKeyChecking=no \
             -o UserKnownHostsFile=~/.ssh/do_known_hosts \
             ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} "
-              echo '🔪 Killing process on port 3082...'
-              PORT=3082
+              echo '🔪 Killing process on port 3084...'
+              PORT=3084
               PID=\$(lsof -t -i:\$PORT)
               if [ -n \"\$PID\" ]; then
                 kill -9 \$PID && echo '✅ Process on port \$PORT killed.'
@@ -73,7 +73,7 @@ jobs:
                 echo '⚠️ No process found on port \$PORT.'
               fi
 
-              cd /www/wwwroot/snvn.deepseahost.com/reactjs
+              cd /www/wwwroot/snvn.deepseahost.com/quizfront
               echo '📦 Backing up current build...'
               mv build build.bak || echo 'No previous build to back up'
             "
@@ -82,18 +82,18 @@ jobs:
             -o StrictHostKeyChecking=no \
             -o UserKnownHostsFile=~/.ssh/do_known_hosts \
             -r build \
-            ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }}:/www/wwwroot/snvn.deepseahost.com/reactjs/
+            ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }}:/www/wwwroot/snvn.deepseahost.com/quizfront/
 
-      - name: Start server on port 3082
+      - name: Start server on port 3084
         run: |
           ssh -i ~/.ssh/key.pem \
             -o StrictHostKeyChecking=no \
             -o UserKnownHostsFile=~/.ssh/do_known_hosts \
             ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} "
-              cd /www/wwwroot/snvn.deepseahost.com/reactjs/build
-              echo '🚀 Starting React app on port 3082...'
-              nohup npx serve -s . -l 3082 > serve.log 2>&1 &
-              echo '✅ React app started on port 3082.'
+              cd /www/wwwroot/snvn.deepseahost.com/quizfront/build
+              echo '🚀 Starting React app on port 3084...'
+              nohup npx serve -s . -l 3084 > serve.log 2>&1 &
+              echo '✅ React app started on port 3084.'
             "
 
       - name: Rollback logic
@@ -102,7 +102,7 @@ jobs:
             -o StrictHostKeyChecking=no \
             -o UserKnownHostsFile=~/.ssh/do_known_hosts \
             ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} "
-              cd /www/wwwroot/snvn.deepseahost.com/reactjs
+              cd /www/wwwroot/snvn.deepseahost.com/quizfront
               if [ ! -d build ]; then
                 echo '❌ Deployment failed. Rolling back...'
                 mv build.bak build
