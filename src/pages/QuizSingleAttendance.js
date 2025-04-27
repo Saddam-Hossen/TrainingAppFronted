@@ -79,8 +79,17 @@ const QuizSingleAttendance = () => {
   const isButtonDisabled = (attDatetime) => {
     const classTime = moment(attDatetime);
     const currentTime = moment().tz('Asia/Dhaka');
-    return currentTime.isAfter(classTime.add(16, 'hours'));
+    
+    // Condition 1: If current time is before class time
+    const isBeforeClassTime = currentTime.isBefore(classTime);
+  
+    // Condition 2: If current time is more than 16 hours after class time
+    const isAfter16Hours = currentTime.isAfter(classTime.add(16, 'hours'));
+  
+    // Return true if any condition is met (disable the button)
+    return isBeforeClassTime || isAfter16Hours;
   };
+  
 
   return (
     <>
@@ -114,10 +123,19 @@ const QuizSingleAttendance = () => {
                       <td>{att.className || '-'}</td>
                       <td>{att.classNumber || '-'}</td>
                       <td>
-                        <span className={att.status === 'Present' ? 'text-success' : 'text-danger'}>
+                        <span
+                          className={
+                            att.status === 'Present'
+                              ? 'text-success' // Green for Present
+                              : att.status === 'Late'
+                              ? 'text-warning' // Yellow for Late
+                              : 'text-danger' // Red for Absent
+                          }
+                        >
                           {att.status}
                         </span>
                       </td>
+
                       <td>{att.lateReason || '-'}</td>
                       <td>
                         <Button
@@ -158,7 +176,7 @@ const QuizSingleAttendance = () => {
                 type="datetime-local"
                 value={modalData.datetime}
                 onChange={(e) => setModalData({ ...modalData, datetime: e.target.value })}
-                disabled
+                
               />
             </Form.Group>
             <Form.Group className="mb-3">

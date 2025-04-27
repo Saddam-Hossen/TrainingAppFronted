@@ -3,6 +3,9 @@ import { Table, Card, Container, Button, Modal, Form } from 'react-bootstrap';
 import { BsChatLeftTextFill } from 'react-icons/bs'; // icon for feedback
 import SingleNavbar from "../layouts/SingleNavbar";
 import { getAllQuizFeedback, saveQuizFeedback } from '../services/QuizSingleFeedbackService'; // services
+import moment from 'moment';
+
+// Inside your map:
 
 const QuizSingleFeedback = () => {
   const [notices, setNotices] = useState([]);
@@ -81,6 +84,8 @@ const QuizSingleFeedback = () => {
               <Table striped bordered hover>
                 <thead className="table-light">
                   <tr>
+                    <th>#</th>
+                    <th>Date & Time</th>
                     <th>Class Name</th>
                     <th>Class Number</th>
                     <th>Trainer Name</th>
@@ -90,25 +95,32 @@ const QuizSingleFeedback = () => {
                   </tr>
                 </thead>
                 <tbody>
-                {notices.map((notice, index) => (
-                    <tr key={notice.id ?? `temp-${index}`}>
-                      <td>{notice.className}</td>
-                      <td>{notice.classNumber}</td>
-                      <td>{notice.trainerName}</td>
-                      <td>{notice.rating}</td>
-                      <td>{notice.comment}</td>
-                      <td>
-                        <Button
-                          variant="outline-primary"
-                          size="sm"
-                          onClick={() => handleOpenModal(notice)}
-                        >
-                          Add
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
+                    {notices.map((notice, index) => {
+                        const isBeforeClassTime = moment().isBefore(moment(notice.dateTime, "YYYY-MM-DDTHH:mm"));
+                        return (
+                        <tr key={notice.id ?? `temp-${index}`}>
+                            <td>{index + 1}</td>
+                            <td>{moment(notice.dateTime, "YYYY-MM-DDTHH:mm").format('YYYY-MM-DD hh:mm A')}</td>
+                            <td>{notice.className}</td>
+                            <td>{notice.classNumber}</td>
+                            <td>{notice.trainerName}</td>
+                            <td>{notice.rating}</td>
+                            <td>{notice.comment}</td>
+                            <td>
+                            <Button
+                                variant="outline-primary"
+                                size="sm"
+                                onClick={() => handleOpenModal(notice)}
+                                disabled={isBeforeClassTime} // 🔥 Disable button if it's before class time
+                            >
+                                Add
+                            </Button>
+                            </td>
+                        </tr>
+                        );
+                    })}
+                    </tbody>
+
               </Table>
             </div>
           )}

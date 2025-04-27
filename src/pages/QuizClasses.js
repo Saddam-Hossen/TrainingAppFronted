@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, Form, Table } from 'react-bootstrap';
 import Navbar from "../layouts/Navbar";
-import { saveQuizNotice, getAllQuizNotices,deleteQuizClasses } from '../services/QuizClassesService';
+import { saveQuizNotice, getAllQuizNotices, deleteQuizClasses } from '../services/QuizClassesService';
 
 const QuizClasses = () => {
     const [show, setShow] = useState(false);
@@ -23,7 +23,14 @@ const QuizClasses = () => {
 
     const handleSubmit = async () => {
         try {
-            await saveQuizNotice(formData); // save to backend
+            // Convert the datetime to UTC before sending to the backend
+            const utcDatetime = new Date(formData.datetime).toISOString();
+
+            await saveQuizNotice({
+                ...formData,
+                datetime: utcDatetime // send UTC date to backend
+            });
+
             const updatedNotices = await getAllQuizNotices(); // refresh list from DB
             setNotices(updatedNotices);
 
@@ -61,6 +68,22 @@ const QuizClasses = () => {
         };
         fetchData();
     }, []);
+
+    // Format date for the modal in Asia/Dhaka timezone
+    const formatDatetime = (datetime) => {
+        const options = {
+            timeZone: 'Asia/Dhaka',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        };
+        const date = new Date(datetime);
+        return new Intl.DateTimeFormat('en-GB', options).format(date);
+    };
 
     return (
         <>
@@ -134,7 +157,8 @@ const QuizClasses = () => {
                         {notices.length > 0 ? (
                             notices.map((notice, index) => (
                                 <tr key={index}>
-                                    <td>{notice.datetime}</td>
+                                    {/* Show datetime in Asia/Dhaka timezone */}
+                                    <td>{formatDatetime(notice.datetime)}</td>
                                     <td>{notice.className}</td>
                                     <td>{notice.classNumber}</td>
                                     <td>{notice.trainerName}</td>

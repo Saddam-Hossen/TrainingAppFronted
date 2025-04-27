@@ -52,7 +52,15 @@ const QuizNotice = () => {
                         <td>{index + 1}</td>
                         <td>{notice.name}</td>
                         <td>{new Date(notice.datetime).toLocaleString()}</td>
-                        <td>{notice.text}</td>
+                        <td>
+                            {notice.text.split('\n').map((line, idx) => (
+                                <React.Fragment key={idx}>
+                                {line}
+                                <br />
+                                </React.Fragment>
+                            ))}
+                            </td>
+
                       </tr>
                   ))}
                 </tbody>
