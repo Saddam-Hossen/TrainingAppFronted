@@ -3,6 +3,7 @@ import { Container, Card, Table, Button, Modal, Form } from 'react-bootstrap';
 import { BsClipboardCheck } from 'react-icons/bs';
 import Navbar from "../layouts/SingleNavbar";
 import { getAllAttendance, saveAttendance } from '../services/QuizSingleAttendanceService';
+import moment from 'moment-timezone';
 
 const QuizSingleAttendance = () => {
   const [showDateTime, setShowDateTime] = useState(false);
@@ -25,6 +26,12 @@ const QuizSingleAttendance = () => {
       }
     };
     fetchData();
+
+    const interval = setInterval(() => {
+      setClasses(prev => [...prev]); // Force re-render by modifying the state
+    }, 60000); // Check every minute
+  
+    return () => clearInterval(interval); // Clean up on unmount
   }, []);
 
   const updateAttendance = async (cls, status, datetime = '', lateReason = '') => {
@@ -62,6 +69,17 @@ const QuizSingleAttendance = () => {
       setShowModal(false);
       setModalData({ datetime: '', lateReason: '' });
     }
+  };
+
+  const setDateTime = () => {
+    const currentDateTime = moment().tz('Asia/Dhaka').format('YYYY-MM-DDTHH:mm');
+    setModalData({ ...modalData, datetime: currentDateTime });
+  };
+
+  const isButtonDisabled = (attDatetime) => {
+    const classTime = moment(attDatetime);
+    const currentTime = moment().tz('Asia/Dhaka');
+    return currentTime.isAfter(classTime.add(16, 'hours'));
   };
 
   return (
@@ -107,10 +125,12 @@ const QuizSingleAttendance = () => {
                           variant="primary"
                           onClick={() => {
                             setSelectedClass(att);
+                            setDateTime();
                             setShowModal(true);
                           }}
+                          disabled={isButtonDisabled(att.datetime)}
                         >
-                          Select Action
+                          Add
                         </Button>
                       </td>
                     </tr>
@@ -124,64 +144,44 @@ const QuizSingleAttendance = () => {
 
       {/* Modal for Action Selection */}
       <Modal show={showModal} onHide={() => {
-  setShowModal(false);
-  setShowDateTime(false);
-  setModalData({ datetime: '', lateReason: '' });
-}}>
-  <Modal.Header closeButton>
-    <Modal.Title>Mark Attendance</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    {!showDateTime ? (
-      <div className="d-flex justify-content-around mt-3">
-        <Button
-          variant="success"
-          className="d-flex align-items-center gap-2"
-          onClick={() => setShowDateTime(true)}
-        >
-          ✅ <strong>Present</strong> <span className="badge bg-light text-success">Go!</span>
-        </Button>
-        <Button
-          variant="danger"
-          className="d-flex align-items-center gap-2"
-          onClick={handleAbsent}
-        >
-          ❌ <strong>Absent</strong> <span className="badge bg-light text-danger">Oops!</span>
-        </Button>
-      </div>
-    ) : (
-      <Form>
-        <Form.Group className="mb-3">
-          <Form.Label>Date & Time</Form.Label>
-          <Form.Control
-            type="datetime-local"
-            value={modalData.datetime}
-            onChange={(e) => setModalData({ ...modalData, datetime: e.target.value })}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Late Reason</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter reason (optional)"
-            value={modalData.lateReason}
-            onChange={(e) => setModalData({ ...modalData, lateReason: e.target.value })}
-          />
-        </Form.Group>
-        <div className="text-center">
-          <Button
-            variant="success"
-            className="d-flex align-items-center gap-2 mx-auto"
-            onClick={handlePresent}
-          >
-            ✅ <strong>Confirm Present</strong>
-          </Button>
-        </div>
-      </Form>
-    )}
-  </Modal.Body>
-</Modal>
-
+        setShowModal(false);
+        setModalData({ datetime: '', lateReason: '' });
+      }}>
+        <Modal.Header closeButton>
+          <Modal.Title>Mark Attendance</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Date & Time</Form.Label>
+              <Form.Control
+                type="datetime-local"
+                value={modalData.datetime}
+                onChange={(e) => setModalData({ ...modalData, datetime: e.target.value })}
+                disabled
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Late Reason</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter reason (optional)"
+                value={modalData.lateReason}
+                onChange={(e) => setModalData({ ...modalData, lateReason: e.target.value })}
+              />
+            </Form.Group>
+            <div className="text-center">
+              <Button
+                variant="success"
+                className="d-flex align-items-center gap-2 mx-auto"
+                onClick={handlePresent}
+              >
+                ✅ <strong>Confirm Present</strong>
+              </Button>
+            </div>
+          </Form>
+        </Modal.Body>
+      </Modal>
     </>
   );
 };
