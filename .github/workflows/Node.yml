@@ -107,7 +107,7 @@ jobs:
               if [ ! -d build ]; then
                 echo '❌ Deployment failed. Rolling back...'
                 mv build.bak build
-                echo '🔁 Rollback complete.'
+                echo '🔁 Rollback complete good.'
               else
                 echo '✅ Deployment successful.'
               fi

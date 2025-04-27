@@ -14,7 +14,7 @@ const Navbar = () => {
       <div className="container-fluid">
         
         {/* Logo */}
-        <a className="navbar-brand fs-4 fw-bold" href="#">SNVN</a>
+        <a className="navbar-brand fs-4 fw-bold" href="#">CIT</a>
 
         {/* Mobile Menu Toggle */}
         <button

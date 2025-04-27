@@ -33,14 +33,22 @@ const QuizNotice = () => {
           {notices.length === 0 ? (
             <p className="text-muted text-center">No notices available at the moment.</p>
           ) : (
-            <div className="table-responsive">
+            <div
+              style={{
+                width: '100%',
+                maxHeight: '500px',
+                overflowY: 'auto',
+                overflowX: 'hidden',
+                margin: '0 auto',
+              }}
+            >
               <Table striped bordered hover className="align-middle text-center small">
                 <thead className="table-light">
                   <tr>
-                    <th>#</th>
-                    <th>Notification Name</th>
-                    <th>Date & Time</th>
-                    <th>Details</th>
+                    <th style={{ width: '10%' }}>#</th>
+                    <th style={{ width: '20%' }}>Notification Name</th>
+                    <th style={{ width: '10%' }}>Date & Time</th>
+                    <th style={{ width: '60%' }}>Details</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -52,15 +60,14 @@ const QuizNotice = () => {
                         <td>{index + 1}</td>
                         <td>{notice.name}</td>
                         <td>{new Date(notice.datetime).toLocaleString()}</td>
-                        <td>
-                            {notice.text.split('\n').map((line, idx) => (
-                                <React.Fragment key={idx}>
-                                {line}
-                                <br />
-                                </React.Fragment>
-                            ))}
-                            </td>
-
+                        <td className="text-start">
+                          {notice.text.split('\n').map((line, idx) => (
+                            <React.Fragment key={idx}>
+                              {line}
+                              <br />
+                            </React.Fragment>
+                          ))}
+                        </td>
                       </tr>
                   ))}
                 </tbody>

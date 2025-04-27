@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, Form, Table } from 'react-bootstrap';
 import Navbar from "../layouts/Navbar";
-import { saveQuizNotice, getAllQuizNotices,updateQuizNoticeStatus } from '../services/QuizNoticeService';
+import { saveQuizNotice, getAllQuizNotices, updateQuizNoticeStatus } from '../services/QuizNoticeService';
+
 const QuizNotice = () => {
     const [show, setShow] = useState(false);
     const [notices, setNotices] = useState([]);
@@ -25,38 +26,36 @@ const QuizNotice = () => {
 
     const handleSubmit = async () => {
         try {
-          const response = await saveQuizNotice(formData);  // formData has name, datetime, text, status
-          setNotices(prev => [...prev, response]);
-          handleClose();
+            const response = await saveQuizNotice(formData);
+            setNotices(prev => [...prev, response]);
+            handleClose();
         } catch (err) {
-          alert("❌ Failed to save quiz notice.");
+            alert("❌ Failed to save quiz notice.");
         }
-      };
+    };
 
-      useEffect(() => {
+    useEffect(() => {
         const fetchNotices = async () => {
-          try {
-            const data = await getAllQuizNotices();  // ✅ Fetch from DB
-           console.log("data",data)
-            setNotices(data);  // ✅ Save to state
-          } catch (err) {
-            console.error("❌ Error fetching quiz notices:", err);
-          }
+            try {
+                const data = await getAllQuizNotices();
+                setNotices(data);
+            } catch (err) {
+                console.error("❌ Error fetching quiz notices:", err);
+            }
         };
-    
+
         fetchNotices();
-      }, []);
-    
+    }, []);
 
     return (
         <>
             <Navbar />
-            <div className="container mt-4" style={{ paddingTop: "100px" }}>
-                <Button variant="primary" onClick={handleShow}>Add Quiz Notice</Button>
+            <div className="container mt-4" style={{ paddingTop: "100px", display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Button variant="primary" onClick={handleShow}>Add Notice</Button>
 
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Add Quiz Notice</Modal.Title>
+                        <Modal.Title>Add Notice</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form>
@@ -111,55 +110,66 @@ const QuizNotice = () => {
                     </Modal.Footer>
                 </Modal>
 
-                <Table striped bordered hover responsive className="mt-4">
-                    <thead>
-                        <tr>
-                            <th>SN</th>
-                            <th>Notification Name</th>
-                            <th>Notification DateTime</th>
-                            <th>Notification Text</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {notices.map((notice, index) => (
-                            <tr key={notice.id || index}>
-                            <td>{index + 1} </td>
-                            <td>{notice.name}</td>
-                            <td>{new Date(notice.datetime).toLocaleString()}</td>
-                            <td>{notice.text}</td>
-                            <td>{notice.status}</td>
-                            <td>
-                                <Button
-                                    variant={notice.status === "Active" ? "danger" : "success"}
-                                    size="sm"
-                                    onClick={async () => {
-                                    const newStatus = notice.status === "Active" ? "Inactive" : "Active";
-                                   // alert(newStatus)
-                                    try {
-                                        const updatedNotice = await updateQuizNoticeStatus(notice.id, newStatus);
-
-                                        const updatedNotices = notices.map(n =>
-                                        n.id === notice.id ? updatedNotice : n
-                                        );
-
-                                        setNotices(updatedNotices);
-                                    } catch (err) {
-                                        alert("❌ Failed to update status");
-                                        console.error(err);
-                                    }
-                                    }}
-                                >
-                                    {notice.status === "Active" ? "Deactivate" : "Activate"}
-                                </Button>
-                                </td>
-
+                {/* Table Section */}
+                <div style={{
+                    width: '100%',
+                    maxHeight: '500px',
+                    overflowY: 'auto',
+                    overflowX: 'hidden',
+                    marginTop: '10px'
+                }}>
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th style={{ width: '5%' }}>#</th>
+                                <th style={{ width: '20%' }}>Notification Name</th>
+                                <th style={{ width: '10%' }}>Notification DateTime</th>
+                                <th style={{ width: '40%' }}>Notification Text</th>
+                                <th style={{ width: '10%' }}>Status</th>
+                                <th style={{ width: '15%' }}>Action</th>
                             </tr>
-                        ))}
+                        </thead>
+                        <tbody>
+                            {notices.map((notice, index) => (
+                                <tr key={notice.id || index}>
+                                    <td>{index + 1}</td>
+                                    <td>{notice.name}</td>
+                                    <td>{new Date(notice.datetime).toLocaleString()}</td>
+                                    <td className="text-start">
+                                        {notice.text.split('\n').map((line, idx) => (
+                                            <React.Fragment key={idx}>
+                                                {line}
+                                                <br />
+                                            </React.Fragment>
+                                        ))}
+                                    </td>
+                                    <td>{notice.status}</td>
+                                    <td>
+                                        <Button
+                                            variant={notice.status === "Active" ? "danger" : "success"}
+                                            size="sm"
+                                            onClick={async () => {
+                                                const newStatus = notice.status === "Active" ? "Inactive" : "Active";
+                                                try {
+                                                    const updatedNotice = await updateQuizNoticeStatus(notice.id, newStatus);
+                                                    const updatedNotices = notices.map(n =>
+                                                        n.id === notice.id ? updatedNotice : n
+                                                    );
+                                                    setNotices(updatedNotices);
+                                                } catch (err) {
+                                                    alert("❌ Failed to update status");
+                                                    console.error(err);
+                                                }
+                                            }}
+                                        >
+                                            {notice.status === "Active" ? "Deactivate" : "Activate"}
+                                        </Button>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
-
-                </Table>
+                    </Table>
+                </div>
             </div>
         </>
     );
