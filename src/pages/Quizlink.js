@@ -3,6 +3,7 @@ import { Button, Modal, Form, Table } from 'react-bootstrap';
 import Navbar from "../layouts/Navbar";
 import { saveQuizlink, getAllQuizlinks, deleteQuizlinkById } from '../services/QuizlinkService';
 import {getAllQuizNotices,getAllEmployees} from '../services/QuizClassesService';
+import { FaTrash } from 'react-icons/fa'; // Import the Trash icon
 
 const Quizlink = () => {
     const[totalClasses, setTotaClasses] = useState([]);
@@ -67,12 +68,12 @@ const Quizlink = () => {
         <>
             <Navbar />
             <div className="container mt-4" style={{ paddingTop: "100px" }}>
-                <Button variant="primary" onClick={handleShow}>Add Quizlink</Button>
+                <Button variant="primary" onClick={handleShow}>Add Class Link</Button>
 
                 {/* Modal */}
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Add Quizlink</Modal.Title>
+                        <Modal.Title> Class link Information</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form>
@@ -141,7 +142,12 @@ const Quizlink = () => {
                                     <td>{quizlink.classNumber}</td>
                                     <td>{quizlink.link}</td>
                                     <td>
-                                        <Button variant="danger" size="sm" onClick={() => handleDelete(quizlink.id)}>Delete</Button>
+                                        <Button  variant="outline-danger"
+                                            size="sm"
+                                            style={{
+                                                borderColor: 'transparent',
+                                                boxShadow: 'none'
+                                            }} onClick={() => handleDelete(quizlink.id)}> <FaTrash /> {/* Render Trash Icon */}</Button>
                                     </td>
                                 </tr>
                             ))

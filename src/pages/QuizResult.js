@@ -3,6 +3,7 @@ import { Button, Modal, Form, Table } from 'react-bootstrap';
 import Navbar from "../layouts/Navbar";
 import { saveClass, getAllClasses, deleteClassRecord } from '../services/QuizResultService';
 import {getAllQuizNotices,getAllEmployees} from '../services/QuizClassesService';
+import { FaTrash } from 'react-icons/fa'; // Import the Trash icon
 
 const QuizResult = () => {
     const[students, setStudents] = useState([]);
@@ -85,7 +86,7 @@ const QuizResult = () => {
                 {/* Modal */}
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Add Quiz Result</Modal.Title>
+                        <Modal.Title>Individual Result Information</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form>
@@ -199,7 +200,12 @@ const QuizResult = () => {
                                     <td>{cls.obtainMarks}</td>
                                     <td>{cls.merit}</td>
                                     <td>
-                                        <Button variant="danger" size="sm" onClick={() => handleDelete(cls.id)}>Delete</Button>
+                                        <Button  variant="outline-danger"
+                                            size="sm"
+                                            style={{
+                                                borderColor: 'transparent',
+                                                boxShadow: 'none'
+                                            }} onClick={() => handleDelete(cls.id)}> <FaTrash /> {/* Render Trash Icon */}</Button>
                                     </td>
                                 </tr>
                             ))

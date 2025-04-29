@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, Form, Table } from 'react-bootstrap';
 import Navbar from "../layouts/Navbar";
-import { saveQuizNotice, getAllQuizNotices, updateQuizNoticeStatus } from '../services/QuizNoticeService';
-
+import { saveQuizNotice, getAllQuizNotices, updateQuizNoticeStatus ,deleteQuizNotice} from '../services/QuizNoticeService';
+import { FaTrash } from 'react-icons/fa'; // Import the Trash icon
+import { FaToggleOn, FaToggleOff } from 'react-icons/fa'; // Import the toggle icons
 const QuizNotice = () => {
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+const [selectedNoticeId, setSelectedNoticeId] = useState(null);
+
     const [show, setShow] = useState(false);
     const [notices, setNotices] = useState([]);
     const [formData, setFormData] = useState({
@@ -55,7 +59,7 @@ const QuizNotice = () => {
 
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Add Notice</Modal.Title>
+                        <Modal.Title> Notice Information</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form>
@@ -119,16 +123,19 @@ const QuizNotice = () => {
                     marginTop: '10px'
                 }}>
                     <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th style={{ width: '5%' }}>#</th>
-                                <th style={{ width: '20%' }}>Notification Name</th>
-                                <th style={{ width: '10%' }}>Notification DateTime</th>
-                                <th style={{ width: '40%' }}>Notification Text</th>
-                                <th style={{ width: '10%' }}>Status</th>
-                                <th style={{ width: '15%' }}>Action</th>
-                            </tr>
+                    <thead>
+                        <tr>
+                            <th style={{ width: '5%' }}>#</th>
+                            <th style={{ width: '20%' }}>Notification Name</th>
+                            <th style={{ width: '10%' }}>Notification DateTime</th>
+                            <th style={{ width: '40%' }}>Notification Text</th>
+                            <th style={{ width: '10%' }}>Status</th>
+                            <th style={{ width: '15%' }}>Toggle Status</th>
+                            <th style={{ width: '10%' }}>Action</th>
+                        </tr>
                         </thead>
+
+
                         <tbody>
                             {notices.map((notice, index) => (
                                 <tr key={notice.id || index}>
@@ -146,7 +153,7 @@ const QuizNotice = () => {
                                     <td>{notice.status}</td>
                                     <td>
                                         <Button
-                                            variant={notice.status === "Active" ? "danger" : "success"}
+                                             variant="link"  // Use 'link' to remove default background color
                                             size="sm"
                                             onClick={async () => {
                                                 const newStatus = notice.status === "Active" ? "Inactive" : "Active";
@@ -162,15 +169,63 @@ const QuizNotice = () => {
                                                 }
                                             }}
                                         >
-                                            {notice.status === "Active" ? "Deactivate" : "Activate"}
+                                            {notice.status === "Active" ? <FaToggleOn size={20} /> : <FaToggleOff size={20} />}
                                         </Button>
                                     </td>
+                                    <td>
+                                    <Button
+                                            variant="outline-danger"
+                                            size="sm"
+                                            style={{
+                                                borderColor: 'transparent',
+                                                boxShadow: 'none'
+                                            }}
+                                            onClick={async () => {
+                                                setSelectedNoticeId(notice.id);
+                                                setShowDeleteModal(true); // Show the modal for confirmation
+                                            }}
+                                        >
+                                            <FaTrash /> {/* Render Trash Icon */}
+                                        </Button>
+                                    </td>
+
+
                                 </tr>
                             ))}
                         </tbody>
                     </Table>
                 </div>
             </div>
+
+            <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Confirm Deletion</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Are you sure you want to delete this quiz notice?
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="danger"
+                            onClick={async () => {
+                                try {
+                                    await deleteQuizNotice(selectedNoticeId);
+                                    setNotices(notices.filter(n => n.id !== selectedNoticeId));
+                                    setShowDeleteModal(false);
+                                } catch (err) {
+                                    alert("❌ Failed to delete notice");
+                                    console.error(err);
+                                }
+                            }}
+                        >
+                            Delete
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
         </>
     );
 };

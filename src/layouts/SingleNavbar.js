@@ -14,7 +14,7 @@ const Navbar = () => {
       <div className="container-fluid">
         
         {/* Logo */}
-        <a className="navbar-brand fs-4 fw-bold" href="#">SNVN</a>
+        <a className="navbar-brand fs-4 fw-bold" href="#">CIT</a>
 
         {/* Mobile Menu Toggle */}
         <button
@@ -44,7 +44,7 @@ const Navbar = () => {
                  <a className="nav-link" href="/QuizSinglelink">Class Link</a>
             </li>
             
-            <li className="nav-item dropdown hover-dropdown">
+            <li className="nav-item dropdown hover-dropdown" style={{display:"none"}}>
                  <a className="nav-link" href="#">Information</a>
             </li>
 
