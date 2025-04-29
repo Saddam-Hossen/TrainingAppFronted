@@ -4,6 +4,32 @@ import { BsBellFill } from 'react-icons/bs';
 import SingleNavbar from "../layouts/SingleNavbar";
 import { getAllQuizNotices } from '../services/QuizNoticeService';
 
+// Helper function to render clickable links and preserve line breaks
+const renderTextWithLinks = (text) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const lines = text.split('\n');
+
+  return lines.map((line, lineIdx) => {
+    const segments = line.split(urlRegex).map((part, i) => {
+      if (urlRegex.test(part)) {
+        return (
+          <a key={i} href={part} target="_blank" rel="noopener noreferrer">
+            {part}
+          </a>
+        );
+      }
+      return <React.Fragment key={i}>{part}</React.Fragment>;
+    });
+
+    return (
+      <React.Fragment key={lineIdx}>
+        {segments}
+        <br />
+      </React.Fragment>
+    );
+  });
+};
+
 const QuizNotice = () => {
   const [notices, setNotices] = useState([]);
 
@@ -61,15 +87,10 @@ const QuizNotice = () => {
                         <td>{notice.name}</td>
                         <td>{new Date(notice.datetime).toLocaleString()}</td>
                         <td className="text-start">
-                          {notice.text.split('\n').map((line, idx) => (
-                            <React.Fragment key={idx}>
-                              {line}
-                              <br />
-                            </React.Fragment>
-                          ))}
+                          {renderTextWithLinks(notice.text)}
                         </td>
                       </tr>
-                  ))}
+                    ))}
                 </tbody>
               </Table>
             </div>

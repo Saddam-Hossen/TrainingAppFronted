@@ -4,6 +4,32 @@ import Navbar from "../layouts/Navbar";
 import { saveQuizNotice, getAllQuizNotices, updateQuizNoticeStatus ,deleteQuizNotice} from '../services/QuizNoticeService';
 import { FaTrash } from 'react-icons/fa'; // Import the Trash icon
 import { FaToggleOn, FaToggleOff } from 'react-icons/fa'; // Import the toggle icons
+
+// Helper function to render clickable links and preserve line breaks
+const renderTextWithLinks = (text) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const lines = text.split('\n');
+
+  return lines.map((line, lineIdx) => {
+    const segments = line.split(urlRegex).map((part, i) => {
+      if (urlRegex.test(part)) {
+        return (
+          <a key={i} href={part} target="_blank" rel="noopener noreferrer">
+            {part}
+          </a>
+        );
+      }
+      return <React.Fragment key={i}>{part}</React.Fragment>;
+    });
+
+    return (
+      <React.Fragment key={lineIdx}>
+        {segments}
+        <br />
+      </React.Fragment>
+    );
+  });
+};
 const QuizNotice = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 const [selectedNoticeId, setSelectedNoticeId] = useState(null);
@@ -143,12 +169,7 @@ const [selectedNoticeId, setSelectedNoticeId] = useState(null);
                                     <td>{notice.name}</td>
                                     <td>{new Date(notice.datetime).toLocaleString()}</td>
                                     <td className="text-start">
-                                        {notice.text.split('\n').map((line, idx) => (
-                                            <React.Fragment key={idx}>
-                                                {line}
-                                                <br />
-                                            </React.Fragment>
-                                        ))}
+                                    {renderTextWithLinks(notice.text)}
                                     </td>
                                     <td>{notice.status}</td>
                                     <td>
