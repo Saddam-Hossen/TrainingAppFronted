@@ -1,135 +1,125 @@
-import React, { useState } from 'react';
-import { Container, Row, Col, Form, Button, Card, ListGroup, Image, Table } from 'react-bootstrap';
-import { FaBars } from 'react-icons/fa';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../assets/App.css';
+import React, { useState, useEffect } from "react";
+import { Button, Offcanvas, Container, Row, Col, Card } from "react-bootstrap";
+import { FaBars } from "react-icons/fa";
+import Navbar from "../layouts/Navbar"; // Adjust path if necessary
 
-const ChatPage = () => {
-  const [messages, setMessages] = useState([
-    { id: 1, sender: 'user', text: 'Hello, ChatGPT!' },
-    { id: 2, sender: 'chatgpt', text: 'Hi! How can I help you today?' }
-  ]);
-  const [inputText, setInputText] = useState('');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+const option = {
+  scroll: true,
+  backdrop: true,
+};
 
-  const handleSend = () => {
-    if (inputText.trim() === '') return;
-    setMessages([...messages, { id: Date.now(), sender: 'user', text: inputText }]);
-    setInputText('');
-  };
+const OffCanvasExample = ({ name, ...props }) => {
+  const [show, setShow] = useState(false);
 
-  const avatarUrl = '/sn.jpg'; // <-- your actual JPG path in the public folder
-  const userId = 'User123';
-
-  const tableData = [
-    { id: 1, name: 'Alice', age: 24, department: 'Engineering', status: 'Active' },
-    { id: 2, name: 'Bob', age: 30, department: 'Marketing', status: 'Inactive' },
-    { id: 3, name: 'Charlie', age: 28, department: 'Design', status: 'Active' },
-    { id: 4, name: 'David', age: 35, department: 'HR', status: 'Pending' },
-    { id: 5, name: 'Eva', age: 26, department: 'Finance', status: 'Active' }
-  ];
+  const handleClose = () => setShow(false);
+  const toggleShow = () => setShow((s) => !s);
 
   return (
-    <Container fluid className="vh-100 overflow-hidden">
-      <Row className="h-100 g-0">
-        {/* Sidebar */}
-        {sidebarOpen ? (
-          <Col md={2} className="text-white p-3 d-flex flex-column sidebar" style={{ backgroundColor: '#343541' }}>
-            <div className="d-flex justify-content-between align-items-center mb-4">
-              <Button variant="outline-light" size="sm" onClick={() => setSidebarOpen(false)}>
-                <FaBars />
-              </Button>
-            </div>
+    <>
+      {/* Inline style for the custom list hover effect */}
+      <style>{`
+        .custom-list-item {
+          background-color: transparent;
+          color: #ececf1;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        }
+        .custom-list-item:hover {
+          background-color: #565869;
+        }
+      `}</style>
 
-            {/* Avatar & ID */}
-            <div className="text-center mb-4">
-              <Image
-                src={avatarUrl}
-                roundedCircle
-                alt="Avatar"
-                style={{
-                  width: '60px',
-                  height: '60px',
-                  objectFit: 'cover',
-                  border: '2px solid white'
-                }}
-                className="mb-2"
-              />
-              <div style={{ fontSize: '0.8rem', color: '#ccc' }}>{userId}</div>
-            </div>
+      {/* Toggle icon at top-left */}
+      <Button
+        variant="outline-light"
+        onClick={toggleShow}
+        style={{
+          position: "absolute",
+          top: "20px",
+          left: "20px",
+          zIndex: 1051,
+          border: "none",
+          background: "none",
+        }}
+      >
+        <FaBars size={20} color="#ececf1" />
+      </Button>
 
-            <ListGroup variant="flush" className="flex-grow-1 overflow-auto">
-              <ListGroup.Item className="bg-transparent text-white border-0">Chat History 1</ListGroup.Item>
-              <ListGroup.Item className="bg-transparent text-white border-0">Chat History 2</ListGroup.Item>
-              <ListGroup.Item className="bg-transparent text-white border-0">Chat History 3</ListGroup.Item>
-            </ListGroup>
+      <Offcanvas
+        show={show}
+        onHide={handleClose}
+        {...props}
+        style={{ backgroundColor: "#343541", color: "#ececf1",
 
-            <div className="mt-4">
-              <small>&copy; 2025 CIT</small>
-            </div>
-          </Col>
-        ) : (
-          <div
-            className="text-white p-2 d-flex flex-column align-items-center"
-            style={{ width: '50px', backgroundColor: '#343541' }}
-          >
-            <Button variant="outline-light" size="sm" onClick={() => setSidebarOpen(true)}>
-              <FaBars />
-            </Button>
-          </div>
-        )}
+        width: "250px", // Set a fixed width for the Offcanvas
+         }}
+      >
+        {/* Removed Offcanvas.Header to hide the X icon */}
+        <Offcanvas.Body className="d-flex flex-column align-items-center text-center">
+          {/* Profile Image */}
+          <img
+            src="/sn.jpg"
+            alt="User"
+            className="rounded-circle mb-3 mt-5"
+            style={{
+              width: "60px",
+              height: "60px",
+              objectFit: "cover",
+              border: "2px solid #ececf1",
+            }}
+          />
 
-        {/* Chat Area */}
-        <Col className="d-flex flex-column h-100 p-0" xs={sidebarOpen ? 10 : 12}>
-          {/* Header */}
-          <Row className="p-3 chat-header align-items-center g-0" style={{ backgroundColor: '#343541' }}>
-            <Col>
-              <h5 className="text-white mb-0">IT Crash Course</h5>
-            </Col>
-          </Row>
+          {/* User ID */}
+          <h5 className="mb-4" style={{ color: "#ececf1" }}>
+            User ID: user123
+          </h5>
 
-          {/* Table Area */}
-          <Row className="flex-grow-1 overflow-auto p-3 chat-body g-0">
-            <Col>
-              <div
-                style={{
-                  backgroundColor: '#f0f2f5', // Lighter shade similar to body color
-                  borderRadius: '12px',
-                  padding: '20px',
-                  boxShadow: '0 6px 20px rgba(0, 0, 0, 0.1)',
-                  height: '100%',
-                  overflowY: 'auto'
-                }}
-              >
-                <Table striped hover responsive style={{ marginBottom: 0, backgroundColor: '#f0f2f5' }}>
-                  <thead style={{ backgroundColor: '#dbe2e8' }}>
-                    <tr>
-                      <th>ID</th>
-                      <th>Name</th>
-                      <th>Age</th>
-                      <th>Department</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tableData.map((row) => (
-                      <tr key={row.id}>
-                        <td>{row.id}</td>
-                        <td>{row.name}</td>
-                        <td>{row.age}</td>
-                        <td>{row.department}</td>
-                        <td>{row.status}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </div>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-    </Container>
+          {/* Clickable List */}
+          <ul className="list-unstyled w-100 px-3">
+            {["Notice", "Attendance", "Feedback","Quiz Result" ,"Class Link","Logout"].map((item, index) => (
+              <li key={index} className="custom-list-item text-start py-2 px-3 mb-2 rounded">
+                {item}
+              </li>
+            ))}
+          </ul>
+        </Offcanvas.Body>
+      </Offcanvas>
+    </>
   );
 };
 
-export default ChatPage;
+const OffcanvasPage = () => {
+  useEffect(() => {
+    document.body.style.backgroundColor = "#343541";
+    document.body.style.color = "#ececf1";
+    return () => {
+      document.body.style.backgroundColor = null;
+      document.body.style.color = null;
+    };
+  }, []);
+
+  return (
+    <>
+      <OffCanvasExample {...option} />
+      <Container style={{ paddingTop: "100px" }}>
+        <h3 className="mb-4 text-center">React-Bootstrap Offcanvas</h3>
+        <Row className="justify-content-center">
+          <Col md={6} lg={4}>
+            <Card
+              className="mb-3 p-2 text-center"
+              style={{
+                backgroundColor: "#444654",
+                color: "#ececf1",
+                border: "none",
+              }}
+            >
+              <p>Click the top-left icon to toggle the Offcanvas.</p>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+    </>
+  );
+};
+
+export default OffcanvasPage;
