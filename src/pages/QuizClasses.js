@@ -3,7 +3,7 @@ import { Button, Modal, Form, Table } from 'react-bootstrap';
 import Navbar from "../layouts/Navbar";
 import { saveQuizNotice, getAllQuizNotices, deleteQuizClasses } from '../services/QuizClassesService';
 import { FaTrash } from 'react-icons/fa'; // Import the Trash icon
-
+import AdminPage from '../layouts/AdminPage';
 const QuizClasses = () => {
     const [show, setShow] = useState(false);
     const [notices, setNotices] = useState([]);
@@ -83,7 +83,7 @@ const QuizClasses = () => {
 
     return (
         <>
-            <Navbar />
+            <AdminPage />
             <div className="container mt-4" style={{ paddingTop: "100px" }}>
                 <Button variant="primary" onClick={handleShow}>Add Class</Button>
 
@@ -139,8 +139,15 @@ const QuizClasses = () => {
                 </Modal>
 
                 {/* Table */}
-                <Table striped bordered hover className="mt-4">
-                    <thead>
+                <div className="table-container">
+                 <Table
+                    striped
+                    bordered
+                    hover
+                    responsive="sm"
+                    className="custom-table"
+                  >
+                     <thead className="table-light">
                         <tr>
                             <th>Date & Time</th>
                             <th>Class Name</th>
@@ -175,6 +182,7 @@ const QuizClasses = () => {
                         )}
                     </tbody>
                 </Table>
+                </div>
             </div>
         </>
     );

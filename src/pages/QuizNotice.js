@@ -3,7 +3,8 @@ import { Button, Modal, Form, Table } from 'react-bootstrap';
 import Navbar from "../layouts/Navbar";
 import { saveQuizNotice, getAllQuizNotices, updateQuizNoticeStatus, deleteQuizNotice } from '../services/QuizNoticeService';
 import { FaTrash, FaToggleOn, FaToggleOff } from 'react-icons/fa';
-import TestPage from '../pages/TestPage';
+import AdminPage from '../layouts/AdminPage';
+import '../assets/App.css'; // Adjust the path if needed
 
 // Helper function to render clickable links and preserve line breaks
 const renderTextWithLinks = (text) => {
@@ -78,7 +79,7 @@ const QuizNotice = () => {
 
   return (
     <>
-      <TestPage />
+      <AdminPage />
       <div className="container" style={{ paddingTop: "20px", display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Button variant="primary" onClick={handleShow}>Add Notice</Button>
 
@@ -140,99 +141,71 @@ const QuizNotice = () => {
           </Modal.Footer>
         </Modal>
 
-        {/* Table Section */}
-        <div
-            style={{
-                width: '100%',
-                maxHeight: '700px',
-                overflowY: 'scroll',
-                overflowX: 'scroll',
-                marginTop: '20px',
-                borderRadius: '10px',
-                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
-               
-                padding: '10px',
-                transition: 'all 0.3s ease-in-out',
-                scrollbarWidth: 'none',         // Firefox
-                msOverflowStyle: 'none',        // IE and Edge
-            }}
-            onScroll={(e) => {
-                e.target.style.scrollbarWidth = 'none'; // Extra precaution (not always needed)
-            }}
-            >
+        <div className="table-container">
             <Table
                 striped
                 bordered
                 hover
                 responsive="sm"
-                style={{
-                minWidth: '100%',
-                tableLayout: 'auto',
-                borderRadius: '8px',
-            
-                transition: 'all 0.3s ease-in-out'
-                }}
+                className="custom-table"
             >
-
-            <thead className="table-light">
-              <tr>
-                <th style={{ backgroundColor: "#343541", color: "#ececf1" }}>#</th>
-                <th style={{ backgroundColor: "#343541", color: "#ececf1" }}>Notification Name</th>
-                <th style={{ backgroundColor: "#343541", color: "#ececf1" }}>Notification DateTime</th>
-                <th style={{ backgroundColor: "#343541", color: "#ececf1" }}>Notification Text</th>
-                <th style={{ backgroundColor: "#343541", color: "#ececf1" }}>Status</th>
-                <th style={{ backgroundColor: "#343541", color: "#ececf1" }}>Action</th>
-              </tr>
-            </thead>
-            <tbody >
-              {notices.map((notice, index) => (
-                <tr key={notice.id || index} style={{ transition: 'background-color 0.3s ease' }}>
-                  <td style={{ backgroundColor: "#343541", color: "#ececf1" }}>{index + 1}</td>
-                  <td style={{ backgroundColor: "#343541", color: "#ececf1" }}>{notice.name}</td>
-                  <td style={{ backgroundColor: "#343541", color: "#ececf1" }}>{new Date(notice.datetime).toLocaleString()}</td>
-                  <td style={{ backgroundColor: "#343541", color: "#ececf1" }} className="text-start">{renderTextWithLinks(notice.text)}</td>
-                  <td style={{ backgroundColor: "#343541", color: "#ececf1" }}>
-                  {notice.status}
-                    <Button
-                      variant="link"
-                      size="sm"
-                      onClick={async () => {
-                        const newStatus = notice.status === "Active" ? "Inactive" : "Active";
-                        try {
-                          const updatedNotice = await updateQuizNoticeStatus(notice.id, newStatus);
-                          const updatedNotices = notices.map(n =>
-                            n.id === notice.id ? updatedNotice : n
-                          );
-                          setNotices(updatedNotices);
-                        } catch (err) {
-                          alert("❌ Failed to update status");
-                        }
-                      }}
-                    >
-                      {notice.status === "Active" ? <FaToggleOn size={20} /> : <FaToggleOff size={20} />}
-                    </Button>
-                  </td>
-                  <td style={{ backgroundColor: "#343541", color: "#ececf1" }}>
-                    <Button
-                      variant="outline-danger"
-                      size="sm"
-                      style={{
-                        borderColor: 'transparent',
-                        boxShadow: 'none'
-                      }}
-                      onClick={() => {
-                        setSelectedNoticeId(notice.id);
-                        setShowDeleteModal(true);
-                      }}
-                    >
-                      <FaTrash />
-                    </Button>
-                  </td>
+                <thead className="table-light">
+                <tr>
+                    <th className="table-dark-cell">#</th>
+                    <th className="table-dark-cell">Notification Name</th>
+                    <th className="table-dark-cell">Notification DateTime</th>
+                    <th className="table-dark-cell">Notification Text</th>
+                    <th className="table-dark-cell">Status</th>
+                    <th className="table-dark-cell">Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
-        </div>
+                </thead>
+                <tbody>
+                {notices.map((notice, index) => (
+                    <tr key={notice.id || index} style={{ transition: 'background-color 0.3s ease' }}>
+                    <td className="table-dark-cell">{index + 1}</td>
+                    <td className="table-dark-cell">{notice.name}</td>
+                    <td className="table-dark-cell">{new Date(notice.datetime).toLocaleString()}</td>
+                    <td className="table-dark-cell text-start">{renderTextWithLinks(notice.text)}</td>
+                    <td className="table-dark-cell">
+                        {notice.status}
+                        <Button
+                        variant="link"
+                        size="sm"
+                        onClick={async () => {
+                            const newStatus = notice.status === "Active" ? "Inactive" : "Active";
+                            try {
+                            const updatedNotice = await updateQuizNoticeStatus(notice.id, newStatus);
+                            const updatedNotices = notices.map(n =>
+                                n.id === notice.id ? updatedNotice : n
+                            );
+                            setNotices(updatedNotices);
+                            } catch (err) {
+                            alert("❌ Failed to update status");
+                            }
+                        }}
+                        >
+                        {notice.status === "Active" ? <FaToggleOn size={20} /> : <FaToggleOff size={20} />}
+                        </Button>
+                    </td>
+                    <td className="table-dark-cell">
+                        <Button
+                        variant="outline-danger"
+                        size="sm"
+                        style={{ borderColor: 'transparent', boxShadow: 'none' }}
+                        onClick={() => {
+                            setSelectedNoticeId(notice.id);
+                            setShowDeleteModal(true);
+                        }}
+                        >
+                        <FaTrash />
+                        </Button>
+                    </td>
+                    </tr>
+                ))}
+                </tbody>
+            </Table>
+            </div>
+
       </div>
 
       {/* Delete confirmation modal */}

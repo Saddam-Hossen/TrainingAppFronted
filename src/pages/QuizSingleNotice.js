@@ -4,6 +4,8 @@ import { BsBellFill } from 'react-icons/bs';
 import SingleNavbar from "../layouts/SingleNavbar";
 import { getAllQuizNotices } from '../services/QuizNoticeService';
 import moment from 'moment';
+import StudentPage from '../layouts/StudentPage';
+import '../assets/App.css'; // Adjust the path if needed
 
 // Helper function to render clickable links and preserve line breaks
 const renderTextWithLinks = (text) => {
@@ -49,7 +51,7 @@ const QuizNotice = () => {
 
   return (
     <>
-      <SingleNavbar />
+      <StudentPage />
       <Container className="mt-5 pt-5">
         <Card className="shadow-sm p-3 p-md-4">
           <h4 className="mb-4 d-flex align-items-center text-primary fs-5 fs-md-4">
@@ -60,16 +62,14 @@ const QuizNotice = () => {
           {notices.length === 0 ? (
             <p className="text-muted text-center">No notices available at the moment.</p>
           ) : (
-            <div
-              style={{
-                width: '100%',
-                maxHeight: '500px',
-                overflowY: 'auto',
-                overflowX: 'hidden',
-                margin: '0 auto',
-              }}
-            >
-              <Table striped bordered hover className="align-middle text-center small">
+            <div className="table-container">
+            <Table
+               striped
+               bordered
+               hover
+               responsive="sm"
+               className="custom-table"
+             >
                 <thead className="table-light">
                   <tr>
                     <th style={{ width: '10%' }}>#</th>

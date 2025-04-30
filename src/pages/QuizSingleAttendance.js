@@ -4,7 +4,8 @@ import { BsClipboardCheck } from 'react-icons/bs';
 import Navbar from "../layouts/SingleNavbar";
 import { getAllAttendance, saveAttendance } from '../services/QuizSingleAttendanceService';
 import moment from 'moment-timezone';
-
+import StudentPage from '../layouts/StudentPage';
+import '../assets/App.css'; // Adjust the path if needed
 const QuizSingleAttendance = () => {
   const [showDateTime, setShowDateTime] = useState(false);
 
@@ -93,7 +94,7 @@ const QuizSingleAttendance = () => {
 
   return (
     <>
-      <Navbar />
+      <StudentPage/>
       <Container className="mt-5 pt-5">
         <Card className="shadow-sm p-3 p-md-4">
           <h4 className="mb-4 text-primary d-flex align-items-center justify-content-center justify-content-md-start">
@@ -104,9 +105,15 @@ const QuizSingleAttendance = () => {
           {classes.length === 0 ? (
             <p className="text-muted text-center">No attendance records yet.</p>
           ) : (
-            <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-              <Table striped bordered hover responsive className="align-middle text-center small">
-                <thead className="table-light" style={{ position: 'sticky', top: 0, backgroundColor: '#f8f9fa', zIndex: 1 }}>
+            <div className="table-container">
+            <Table
+               striped
+               bordered
+               hover
+               responsive="sm"
+               className="custom-table"
+             >
+                <thead className="table-light">
                   <tr>
                     <th>Date & Time</th>
                     <th>Class Name</th>

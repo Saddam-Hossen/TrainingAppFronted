@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Container, Card, Table } from 'react-bootstrap';
 import Navbar from "../layouts/SingleNavbar";
 import { getAllQuizlinks } from '../services/QuizlinkService';
-
+import StudentPage from '../layouts/StudentPage';
+import '../assets/App.css'; // Adjust the path if needed
 const QuizSinglelink = () => {
   const [quizlinks, setQuizlinks] = useState([]);
 
@@ -20,7 +21,7 @@ const QuizSinglelink = () => {
 
   return (
     <>
-      <Navbar />
+      <StudentPage />
       <Container className="mt-5 pt-5">
         <Card className="shadow-sm p-3 p-md-4">
           <h4 className="mb-4 text-primary text-center text-md-start">
@@ -30,8 +31,14 @@ const QuizSinglelink = () => {
           {quizlinks.length === 0 ? (
             <p className="text-muted text-center">No class links added yet.</p>
           ) : (
-            <div className="table-responsive">
-              <Table striped bordered hover className="align-middle text-center small">
+            <div className="table-container">
+            <Table
+               striped
+               bordered
+               hover
+               responsive="sm"
+               className="custom-table"
+             >
                 <thead className="table-light">
                   <tr>
                     <th>#</th>

@@ -4,6 +4,8 @@ import Navbar from "../layouts/Navbar";
 import { saveClass, getAllClasses, deleteClassRecord } from '../services/QuizResultService';
 import {getAllQuizNotices,getAllEmployees} from '../services/QuizClassesService';
 import { FaTrash } from 'react-icons/fa'; // Import the Trash icon
+import AdminPage from '../layouts/AdminPage';
+import '../assets/App.css'; // Adjust the path if needed
 
 const QuizResult = () => {
     const[students, setStudents] = useState([]);
@@ -79,7 +81,7 @@ const QuizResult = () => {
 
     return (
         <>
-            <Navbar />
+            <AdminPage />
             <div className="container mt-4" style={{ paddingTop: "100px" }}>
                 <Button variant="primary" onClick={handleShow}>Add Quiz Result</Button>
 
@@ -175,9 +177,15 @@ const QuizResult = () => {
                     </Modal.Footer>
                 </Modal>
 
-                {/* Table */}
-                <Table striped bordered hover className="mt-4">
-                    <thead>
+                <div className="table-container">
+                    <Table
+                    striped
+                    bordered
+                    hover
+                    responsive="sm"
+                    className="custom-table"
+                    >
+                        <thead className="table-light">
                         <tr>
                             <th>Class Name</th>
                             <th>Class Number</th>
@@ -216,6 +224,7 @@ const QuizResult = () => {
                         )}
                     </tbody>
                 </Table>
+                </div>
             </div>
         </>
     );
