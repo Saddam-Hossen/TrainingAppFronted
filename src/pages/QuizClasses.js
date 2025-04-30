@@ -24,13 +24,8 @@ const QuizClasses = () => {
 
     const handleSubmit = async () => {
         try {
-            // Convert the datetime to UTC before sending to the backend
-            const utcDatetime = new Date(formData.datetime).toISOString();
-
-            await saveQuizNotice({
-                ...formData,
-                datetime: utcDatetime // send UTC date to backend
-            });
+          
+            await saveQuizNotice(formData); // save to backend
 
             const updatedNotices = await getAllQuizNotices(); // refresh list from DB
             setNotices(updatedNotices);
