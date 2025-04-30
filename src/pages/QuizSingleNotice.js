@@ -86,7 +86,7 @@ const QuizNotice = () => {
                       <tr key={notice.id || index}>
                         <td>{index + 1}</td>
                         <td>{notice.name}</td>
-                        <td>{moment(notice.dateTime, "YYYY-MM-DDTHH:mm").format('YYYY-MM-DD hh:mm A')}</td>
+                        <td>{new Date(notice.datetime).toLocaleString()}</td>
                         <td className="text-start">
                           {renderTextWithLinks(notice.text)}
                         </td>
