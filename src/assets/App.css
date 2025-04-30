@@ -1,0 +1,5 @@
+/* Add to your global stylesheet or inside a CSS module */
+table.bordered td,
+table.bordered th {
+  border: 1px solid #999 !important;
+}

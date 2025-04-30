@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Offcanvas, Container, Row, Col, Card } from "react-bootstrap";
 import { FaBars } from "react-icons/fa";
-import Navbar from "../layouts/Navbar"; // Adjust path if necessary
-
 const option = {
   scroll: true,
   backdrop: true,
@@ -34,7 +32,7 @@ const OffCanvasExample = ({ name, ...props }) => {
         variant="outline-light"
         onClick={toggleShow}
         style={{
-          position: "absolute",
+            position: "fixed",  // ✅ Now fixed, so it stays visible on scroll
           top: "20px",
           left: "20px",
           zIndex: 1051,
@@ -74,14 +72,29 @@ const OffCanvasExample = ({ name, ...props }) => {
             User ID: user123
           </h5>
 
-          {/* Clickable List */}
-          <ul className="list-unstyled w-100 px-3">
-            {["Notice", "Attendance", "Feedback","Quiz Result" ,"Class Link","Logout"].map((item, index) => (
-              <li key={index} className="custom-list-item text-start py-2 px-3 mb-2 rounded">
-                {item}
-              </li>
-            ))}
-          </ul>
+            {/* Clickable List with Links */}
+            <ul className="list-unstyled w-100 px-3">
+            <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
+                <a href="/QuizNotice" className="text-decoration-none text-reset d-block">Notice</a>
+            </li>
+            <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
+                <a href="/QuizAttendance" className="text-decoration-none text-reset d-block">Attendance</a>
+            </li>
+            <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
+                <a href="/QuizFeedback" className="text-decoration-none text-reset d-block">Feedback</a>
+            </li>
+            <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
+                <a href="/QuizResult" className="text-decoration-none text-reset d-block">Quiz Result</a>
+            </li>
+            <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
+                <a href="/Quizlink" className="text-decoration-none text-reset d-block">Class Link</a>
+            </li>
+            <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
+                <a href="/logout" className="text-decoration-none text-reset d-block">Logout</a>
+            </li>
+            </ul>
+
+
         </Offcanvas.Body>
       </Offcanvas>
     </>
@@ -101,23 +114,6 @@ const OffcanvasPage = () => {
   return (
     <>
       <OffCanvasExample {...option} />
-      <Container style={{ paddingTop: "100px" }}>
-        <h3 className="mb-4 text-center">React-Bootstrap Offcanvas</h3>
-        <Row className="justify-content-center">
-          <Col md={6} lg={4}>
-            <Card
-              className="mb-3 p-2 text-center"
-              style={{
-                backgroundColor: "#444654",
-                color: "#ececf1",
-                border: "none",
-              }}
-            >
-              <p>Click the top-left icon to toggle the Offcanvas.</p>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
     </>
   );
 };
