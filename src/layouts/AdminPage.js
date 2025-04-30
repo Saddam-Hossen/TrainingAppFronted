@@ -69,7 +69,7 @@ const OffCanvasExample = ({ name, ...props }) => {
 
           {/* User ID */}
           <h5 className="mb-4" style={{ color: "#ececf1" }}>
-            User ID: user123
+          User ID: {localStorage.getItem("userId")}
           </h5>
 
             {/* Clickable List with Links */}

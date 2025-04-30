@@ -84,7 +84,7 @@ const QuizClasses = () => {
     return (
         <>
             <AdminPage />
-            <div className="container mt-4" style={{ paddingTop: "100px" }}>
+            <div className="container mt-0" style={{ paddingTop: "30px" }}>
                 <Button variant="primary" onClick={handleShow}>Add Class</Button>
 
                 {/* Modal */}

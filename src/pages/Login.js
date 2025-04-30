@@ -27,7 +27,8 @@ const Login = () => {
         const sessionExpiryTime = Date.now() + 10 * 60 * 1000; // Set expiry (10 minutes)
         localStorage.setItem("authToken", response.token);
         localStorage.setItem("refreshToken", response.refreshToken);
-        localStorage.setItem("userId", response.idNumber);
+       
+        localStorage.setItem("userId", email);
         sessionStorage.setItem("isAuthenticated", "true");
         sessionStorage.setItem("expiry", sessionExpiryTime); // Store expiry time
        
