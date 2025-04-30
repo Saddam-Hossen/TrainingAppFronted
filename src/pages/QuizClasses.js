@@ -3,6 +3,7 @@ import { Button, Modal, Form, Table } from 'react-bootstrap';
 import Navbar from "../layouts/Navbar";
 import { saveQuizNotice, getAllQuizNotices, deleteQuizClasses } from '../services/QuizClassesService';
 import { FaTrash } from 'react-icons/fa'; // Import the Trash icon
+import moment from 'moment';
 
 const QuizClasses = () => {
     const [show, setShow] = useState(false);
@@ -154,7 +155,7 @@ const QuizClasses = () => {
                             notices.map((notice, index) => (
                                 <tr key={index}>
                                     {/* Show datetime in Asia/Dhaka timezone */}
-                                    <td>{formatDatetime(notice.datetime)}</td>
+                                    <td>{moment(notice.dateTime, "YYYY-MM-DDTHH:mm").format('YYYY-MM-DD hh:mm A')}</td>
                                     <td>{notice.className}</td>
                                     <td>{notice.classNumber}</td>
                                     <td>{notice.trainerName}</td>
