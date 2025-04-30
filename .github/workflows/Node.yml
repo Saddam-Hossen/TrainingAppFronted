@@ -67,7 +67,7 @@ jobs:
                 echo '⚠️ No process found on port \$PORT.'
               fi
 
-              cd /www/wwwroot/snvn.deepseahost.com/quizfront
+              cd /www/wwwroot/CITSNVN/itcrashcourse
               echo '📦 Backing up current build...'
               mv build build.bak || echo 'No previous build to back up'
             "
@@ -76,7 +76,7 @@ jobs:
             -o StrictHostKeyChecking=no \
             -o UserKnownHostsFile=~/.ssh/do_known_hosts \
             -r build \
-            ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }}:/www/wwwroot/snvn.deepseahost.com/quizfront/
+            ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }}:/www/wwwroot/CITSNVN/itcrashcourse/
 
       - name: Start server on port 3084
         run: |
@@ -84,7 +84,7 @@ jobs:
             -o StrictHostKeyChecking=no \
             -o UserKnownHostsFile=~/.ssh/do_known_hosts \
             ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} "
-              cd /www/wwwroot/snvn.deepseahost.com/quizfront/build
+              cd /www/wwwroot/CITSNVN/itcrashcourse/build
               echo '🚀 Starting React app on port 3084...'
               nohup npx serve -s . -l 3084 > serve.log 2>&1 &
               echo '✅ React app started on port 3084.'
@@ -96,7 +96,7 @@ jobs:
             -o StrictHostKeyChecking=no \
             -o UserKnownHostsFile=~/.ssh/do_known_hosts \
             ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} "
-              cd /www/wwwroot/snvn.deepseahost.com/quizfront
+              cd /www/wwwroot/CITSNVN/itcrashcourse
               if [ ! -d build ]; then
                 echo '❌ Deployment failed. Rolling back...'
                 mv build.bak build

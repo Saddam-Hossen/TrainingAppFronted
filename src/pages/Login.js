@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useRole } from "../context/RoleContext"; // Import useRole
 import { loginEmloyee } from "../services/employeeService";
-import { checkAccessComponent, checkAccess, checkAccessMenu } from "../utils/accessControl";
 import ErrorModal from "../context/ErrorModal";
 
 const Login = () => {
@@ -28,6 +27,7 @@ const Login = () => {
         const sessionExpiryTime = Date.now() + 10 * 60 * 1000; // Set expiry (10 minutes)
         localStorage.setItem("authToken", response.token);
         localStorage.setItem("refreshToken", response.refreshToken);
+        localStorage.setItem("userId", response.idNumber);
         sessionStorage.setItem("isAuthenticated", "true");
         sessionStorage.setItem("expiry", sessionExpiryTime); // Store expiry time
        
