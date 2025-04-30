@@ -42,7 +42,7 @@ const Navbar = () => {
             </li>
             
             <li className="nav-item dropdown hover-dropdown">
-                 <a className="nav-link" href="#">Information</a>
+                 <a className="nav-link" href="/TestPage">Information</a>
             </li>
 
 

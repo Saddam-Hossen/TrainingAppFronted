@@ -31,6 +31,7 @@ import QuizSingleResult from "../pages/QuizSingleResult";
 import QuizSinglelink from "../pages/QuizSinglelink";
 import QuizSingleAttendance from "../pages/QuizSingleAttendance";
 import QuizSingleFeedback from "../pages/QuizSingleFeedback";
+import TestPage from "../pages/TestPage";
 function App() {
   return (
   
@@ -69,6 +70,7 @@ function App() {
         <Route path="/QuizSinglelink" element={<ProtectedRoute><QuizSinglelink /></ProtectedRoute>} />
         <Route path="/QuizSingleAttendance" element={<ProtectedRoute><QuizSingleAttendance /></ProtectedRoute>} />
         <Route path="/QuizSingleFeedback" element={<ProtectedRoute><QuizSingleFeedback /></ProtectedRoute>} />
+        <Route path="/TestPage" element={<ProtectedRoute><TestPage /></ProtectedRoute>} />
       </Routes>
       </RoleProvider>
     </Router>

@@ -1,0 +1,39 @@
+body {
+    background-color: #343541;
+    color: white;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .sidebar {
+    background-color: #202123;
+  }
+  
+  .chat-header {
+    background-color: #343541;
+    color: white;
+    border-bottom: 1px solid #2a2b2d;
+  }
+  
+  .chat-body {
+    background-color: #444654;
+    color: white;
+  }
+  
+  .chat-input {
+    background-color: #40414f;
+    border-top: 1px solid #2a2b2d;
+  }
+  
+  .bg-secondary {
+    background-color: #3e3f4b !important;
+  }
+  
+  .sidebar .text-center img {
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+  }
+  table tbody tr:hover {
+    background-color: #eaf4ff; /* light blue on hover */
+    transition: background-color 0.2s ease;
+  }
+    

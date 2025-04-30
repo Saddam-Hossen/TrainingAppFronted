@@ -73,7 +73,7 @@ const QuizClasses = () => {
     // Format date for the modal in Asia/Dhaka timezone
     const formatDatetime = (datetime) => {
         const options = {
-            timeZone: 'Asia/Dhaka',
+           
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
