@@ -154,7 +154,7 @@ const QuizClasses = () => {
                             notices.map((notice, index) => (
                                 <tr key={index}>
                                     {/* Show datetime in Asia/Dhaka timezone */}
-                                    <td>{formatDatetime(notice.datetime)}</td>
+                                    <td>{new Date(att.datetime).toLocaleString()}</td>
                                     <td>{notice.className}</td>
                                     <td>{notice.classNumber}</td>
                                     <td>{notice.trainerName}</td>
