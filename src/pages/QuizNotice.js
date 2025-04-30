@@ -145,14 +145,19 @@ const QuizNotice = () => {
             style={{
                 width: '100%',
                 maxHeight: '700px',
-                overflowY: 'auto',
-                overflowX: 'auto', // allow only when necessary
+                overflowY: 'scroll',
+                overflowX: 'scroll',
                 marginTop: '20px',
                 borderRadius: '10px',
                 boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
-                backgroundColor: "#343541", color: "#ececf1",
                
-                transition: 'all 0.3s ease-in-out'
+                padding: '10px',
+                transition: 'all 0.3s ease-in-out',
+                scrollbarWidth: 'none',         // Firefox
+                msOverflowStyle: 'none',        // IE and Edge
+            }}
+            onScroll={(e) => {
+                e.target.style.scrollbarWidth = 'none'; // Extra precaution (not always needed)
             }}
             >
             <Table
@@ -176,7 +181,6 @@ const QuizNotice = () => {
                 <th style={{ backgroundColor: "#343541", color: "#ececf1" }}>Notification DateTime</th>
                 <th style={{ backgroundColor: "#343541", color: "#ececf1" }}>Notification Text</th>
                 <th style={{ backgroundColor: "#343541", color: "#ececf1" }}>Status</th>
-                <th style={{ backgroundColor: "#343541", color: "#ececf1" }}>Toggle Status</th>
                 <th style={{ backgroundColor: "#343541", color: "#ececf1" }}>Action</th>
               </tr>
             </thead>
@@ -187,8 +191,8 @@ const QuizNotice = () => {
                   <td style={{ backgroundColor: "#343541", color: "#ececf1" }}>{notice.name}</td>
                   <td style={{ backgroundColor: "#343541", color: "#ececf1" }}>{new Date(notice.datetime).toLocaleString()}</td>
                   <td style={{ backgroundColor: "#343541", color: "#ececf1" }} className="text-start">{renderTextWithLinks(notice.text)}</td>
-                  <td style={{ backgroundColor: "#343541", color: "#ececf1" }}>{notice.status}</td>
                   <td style={{ backgroundColor: "#343541", color: "#ececf1" }}>
+                  {notice.status}
                     <Button
                       variant="link"
                       size="sm"
