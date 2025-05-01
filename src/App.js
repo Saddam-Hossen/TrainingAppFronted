@@ -32,7 +32,7 @@ const App = () => {
         inactivityTimer = setTimeout(() => {
           console.log("User inactive for 10 minutes. Logging out...");
           logoutUser();
-        }, 10 * 60 * 1000); // 10 minutes (600,000 ms)
+        }, 20 * 60 * 1000); // 10 minutes (600,000 ms)
       };
 
       // Listen to user interactions
