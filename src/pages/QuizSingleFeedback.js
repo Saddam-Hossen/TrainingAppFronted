@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Card, Container, Button, Modal, Form } from 'react-bootstrap';
 import { BsChatLeftTextFill } from 'react-icons/bs';
 import SingleNavbar from "../layouts/SingleNavbar";
-import { getAllQuizFeedback, saveQuizFeedback } from '../services/QuizSingleFeedbackService';
+import { getAllQuizFeedbackSingle, saveQuizFeedback } from '../services/QuizSingleFeedbackService';
 import moment from 'moment';
 import StudentPage from '../layouts/StudentPage';
 import '../assets/App.css'; // Adjust the path if needed
@@ -16,7 +16,7 @@ const QuizSingleFeedback = () => {
   useEffect(() => {
     const fetchNotices = async () => {
       try {
-        const data = await getAllQuizFeedback();
+        const data = await getAllQuizFeedbackSingle();
         setNotices(data);
       } catch (err) {
         console.error("❌ Error fetching quiz feedback:", err);

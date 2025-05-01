@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Card, Table, Button, Modal, Form } from 'react-bootstrap';
 import { BsClipboardCheck } from 'react-icons/bs';
 import Navbar from "../layouts/SingleNavbar";
-import { getAllAttendance, saveAttendance } from '../services/QuizSingleAttendanceService';
+import { getAllAttendanceSingle, saveAttendance } from '../services/QuizSingleAttendanceService';
 import moment from 'moment-timezone';
 import StudentPage from '../layouts/StudentPage';
 import '../assets/App.css'; // Adjust the path if needed
@@ -20,7 +20,7 @@ const QuizSingleAttendance = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await getAllAttendance();
+        const result = await getAllAttendanceSingle();
         setClasses(result);
       } catch (err) {
         console.error("Failed to fetch data:", err);
