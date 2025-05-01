@@ -125,6 +125,7 @@ const QuizAttendance = () => {
                     <th>Class Number</th>
                     <th>Status</th>
                     <th>Late Reason</th>
+                    <th>Attendance Time</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -149,7 +150,8 @@ const QuizAttendance = () => {
                           </span>
                         </td>
                         <td>{att.lateReason || '-'}</td>
-                        
+                        <td>{new Date(att.createDatetime).toLocaleString()}</td>
+
                       </tr>
                     ))}
                 </tbody>
