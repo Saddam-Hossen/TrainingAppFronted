@@ -1,67 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, Form, Table } from 'react-bootstrap';
-import Navbar from "../layouts/Navbar";
 import { saveClass, getAllClasses, deleteClassRecord } from '../services/QuizResultService';
-import {getAllQuizNotices,getAllEmployees} from '../services/QuizClassesService';
-import { FaTrash } from 'react-icons/fa'; // Import the Trash icon
+import { getAllQuizNotices, getAllEmployees } from '../services/QuizClassesService';
+import { FaTrash } from 'react-icons/fa';
 import AdminPage from '../layouts/AdminPage';
-import '../assets/App.css'; // Adjust the path if needed
+import * as XLSX from 'xlsx';
+import '../assets/App.css';
 
 const QuizResult = () => {
-    const[students, setStudents] = useState([]);
-    const[totalClasses, setTotaClasses] = useState([]);
+    const [students, setStudents] = useState([]);
+    const [totalClasses, setTotalClasses] = useState([]);
     const [show, setShow] = useState(false);
     const [classes, setClasses] = useState([]);
-    const [formData, setFormData] = useState({
-         idNumber: '',  // <-- store student ID here 
-        className: '',
-        classNumber: '',
-       
-        totalMarks: '',
-        obtainMarks: '',
-        merit: ''
-    });
-    
+    const [excelData, setExcelData] = useState([]);
+    const [fileName, setFileName] = useState("");
 
     const handleShow = () => setShow(true);
-    const handleClose = () => setShow(false);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleSubmit = async () => {
-        try {
-            console.log("formData", formData);
-            await saveClass(formData); // save to backend
-            const updatedClasses = await getAllClasses(); // refresh list from DB
-            setClasses(updatedClasses);
-
-            setFormData({
-                idNumber: '',  // Reset student ID
-                className: '',
-                classNumber: '',
-              
-                totalMarks: '',
-                obtainMarks: '',
-                merit: ''
-            });
-            handleClose();
-        } catch (error) {
-            console.error("Failed to save class:", error);
-            alert("Something went wrong while saving.");
-        }
-    };
-
-    const handleDelete = async (idd) => {
-        try {
-            await deleteClassRecord({ id:idd });
-            const updatedClasses = await getAllClasses();
-            setClasses(updatedClasses);
-        } catch (error) {
-            console.error("Delete failed:", error);
-        }
+    const handleClose = () => {
+        setShow(false);
+        setExcelData([]);
+        setFileName("");
     };
 
     useEffect(() => {
@@ -69,9 +27,8 @@ const QuizResult = () => {
             try {
                 const result = await getAllClasses();
                 setClasses(result);
-                setTotaClasses(await getAllQuizNotices()); // Fetch quiz notices
-                setStudents(await getAllEmployees()); // Fetch students
-           
+                setTotalClasses(await getAllQuizNotices());
+                setStudents(await getAllEmployees());
             } catch (err) {
                 console.error("Failed to fetch data:", err);
             }
@@ -79,151 +36,134 @@ const QuizResult = () => {
         fetchData();
     }, []);
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setFileName(file.name);
+
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+            const data = new Uint8Array(evt.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+            setExcelData(jsonData);
+        };
+        reader.readAsArrayBuffer(file);
+    };
+
+    const handleSaveAll = async () => {
+        try {
+            for (const record of excelData) {
+                await saveClass(record);
+            }
+            const updatedClasses = await getAllClasses();
+            setClasses(updatedClasses);
+            handleClose();
+        } catch (error) {
+            console.error("Error saving Excel data:", error);
+            alert("Failed to save data.");
+        }
+    };
+
+    const handleDelete = async (idd) => {
+        try {
+            await deleteClassRecord({ id: idd });
+            const updatedClasses = await getAllClasses();
+            setClasses(updatedClasses);
+        } catch (error) {
+            console.error("Delete failed:", error);
+        }
+    };
+
     return (
         <>
             <AdminPage />
             <div className="container mt-0" style={{ paddingTop: "30px" }}>
-                <Button variant="primary" onClick={handleShow}>Add Quiz Result</Button>
+                <Button variant="primary" onClick={handleShow}>Import</Button>
 
-                {/* Modal */}
-                <Modal show={show} onHide={handleClose}>
+                <Modal show={show} onHide={handleClose} size="lg">
                     <Modal.Header closeButton>
-                        <Modal.Title>Individual Result Information</Modal.Title>
+                        <Modal.Title>Upload Excel Result</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <Form>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Class Name</Form.Label>
-                            <Form.Select
-                                name="className"
-                                value={formData.className}
-                                onChange={handleChange}
-                            >
-                                <option value="">-- Select Class Name --</option>
-                                {totalClasses.map((cls, index) => (
-                                    <option key={index} value={cls.className}>
-                                        {cls.className}
-                                    </option>
-                                ))}
-                            </Form.Select>
+                        <Form.Group controlId="formFile" className="mb-3">
+                            <Form.Label>Select Excel File</Form.Label>
+                            <Form.Control type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
+                            {fileName && <div className="mt-2">Selected File: <strong>{fileName}</strong></div>}
                         </Form.Group>
 
-                        <Form.Group className="mb-3">
-                            <Form.Label>Class Number</Form.Label>
-                            <Form.Select
-                                name="classNumber"
-                                value={formData.classNumber}
-                                onChange={handleChange}
-                            >
-                                <option value="">-- Select Class Number --</option>
-                                {totalClasses.map((cls, index) => (
-                                    <option key={index} value={cls.classNumber}>
-                                        {cls.classNumber}
-                                    </option>
-                                ))}
-                            </Form.Select>
-                            </Form.Group>
-
-                            <Form.Group className="mb-3">
-                                <Form.Label>Student Name</Form.Label>
-                                <Form.Select
-                                    name="idNumber"
-                                    value={formData.idNumber}
-                                    onChange={handleChange}
-                                >
-                                    <option value="">-- Select Student --</option>
-                                    {students.map((student, index) => (
-                                        <option key={index} value={student.idNumber}>
-                                            {student.idNumber}
-                                        </option>
+                        {excelData.length > 0 && (
+                            <Table striped bordered hover size="sm" responsive>
+                                <thead>
+                                    <tr>
+                                        {Object.keys(excelData[0]).map((key, i) => (
+                                            <th key={i}>{key}</th>
+                                        ))}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {excelData.map((row, idx) => (
+                                        <tr key={idx}>
+                                            {Object.values(row).map((val, i) => (
+                                                <td key={i}>{val}</td>
+                                            ))}
+                                        </tr>
                                     ))}
-                                </Form.Select>
-                            </Form.Group>
-
-                       
-
-                            <Form.Group className="mb-3">
-                                <Form.Label>Total Marks</Form.Label>
-                                <Form.Control
-                                    type="number"
-                                    name="totalMarks"
-                                    value={formData.totalMarks}
-                                    onChange={handleChange}
-                                />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Obtained Marks</Form.Label>
-                                <Form.Control
-                                    type="number"
-                                    name="obtainMarks"
-                                    value={formData.obtainMarks}
-                                    onChange={handleChange}
-                                />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Merit</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="merit"
-                                    value={formData.merit}
-                                    onChange={handleChange}
-                                />
-                            </Form.Group>
-                        </Form>
+                                </tbody>
+                            </Table>
+                        )}
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleClose}>Cancel</Button>
-                        <Button variant="primary" onClick={handleSubmit}>Save</Button>
+                        {excelData.length > 0 && <Button variant="success" onClick={handleSaveAll}>Save All</Button>}
                     </Modal.Footer>
                 </Modal>
 
-                <div className="table-container">
-                    <Table
-                    striped
-                    bordered
-                    hover
-                    responsive="sm"
-                    className="custom-table"
-                    >
+                <div className="table-container mt-4">
+                    <Table striped bordered hover responsive="sm" className="custom-table">
                         <thead className="table-light">
-                        <tr>
-                            <th>Class Name</th>
-                            <th>Class Number</th>
-                            <th>Student ID</th>
-                            <th>Total Marks</th>
-                            <th>Obtained Marks</th>
-                            <th>Merit</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {classes.length > 0 ? (
-                            classes.map((cls, index) => (
-                                <tr key={index}>
-                                    <td>{cls.className}</td>
-                                    <td>{cls.classNumber}</td>
-                                    <td>{cls.idNumber}</td>
-                                    {/* Assuming studentId is a string, you can replace it with the actual student name if needed */}
-                                    <td>{cls.totalMarks}</td>
-                                    <td>{cls.obtainMarks}</td>
-                                    <td>{cls.merit}</td>
-                                    <td>
-                                        <Button  variant="outline-danger"
-                                            size="sm"
-                                            style={{
-                                                borderColor: 'transparent',
-                                                boxShadow: 'none'
-                                            }} onClick={() => handleDelete(cls.id)}> <FaTrash /> {/* Render Trash Icon */}</Button>
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
                             <tr>
-                                <td colSpan="6" className="text-center">No classes added yet.</td>
+                                <th>Class Name</th>
+                                <th>Class Number</th>
+                                <th>Student ID</th>
+                                <th>Total Marks</th>
+                                <th>Obtained Marks</th>
+                                <th>Merit</th>
+                                <th>Action</th>
                             </tr>
-                        )}
-                    </tbody>
-                </Table>
+                        </thead>
+                        <tbody>
+                            {classes.length > 0 ? (
+                                classes.map((cls, index) => (
+                                    <tr key={index}>
+                                        <td>{cls.className}</td>
+                                        <td>{cls.classNumber}</td>
+                                        <td>{cls.idNumber}</td>
+                                        <td>{cls.totalMarks}</td>
+                                        <td>{cls.obtainMarks}</td>
+                                        <td>{cls.merit}</td>
+                                        <td>
+                                            <Button
+                                                variant="outline-danger"
+                                                size="sm"
+                                                style={{ borderColor: 'transparent', boxShadow: 'none' }}
+                                                onClick={() => handleDelete(cls.id)}
+                                            >
+                                                <FaTrash />
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="7" className="text-center">No results available.</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </Table>
                 </div>
             </div>
         </>
