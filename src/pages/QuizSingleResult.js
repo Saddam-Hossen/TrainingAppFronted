@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Card, Table } from 'react-bootstrap';
 import Navbar from "../layouts/SingleNavbar";
-import { getAllClasses } from '../services/QuizResultService';
+import { getAllClassesSingle } from '../services/QuizResultService';
 import StudentPage from '../layouts/StudentPage';
 import '../assets/App.css'; // Adjust the path if needed
 const QuizSingleResult = () => {
@@ -10,7 +10,7 @@ const QuizSingleResult = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await getAllClasses();
+        const result = await getAllClassesSingle();
         setClasses(result);
       } catch (err) {
         console.error("Failed to fetch data:", err);

@@ -55,6 +55,8 @@ const QuizResult = () => {
     };
 
     const handleSaveAll = async () => {
+        console.log("Saving all data:", excelData);
+
         try {
             for (const record of excelData) {
                 await saveClass(record);

@@ -4,12 +4,28 @@ import { getToken } from "./Auth";
 const BASE_URL = process.env.REACT_APP_API_URL_UserService || `http://${window.location.hostname}:3083`;
 const InsertClass = `${BASE_URL}/api/quizResult/insert`;
 const getClass = `${BASE_URL}/api/quizResult/getAllAdmin`;
+const getClassSingle = `${BASE_URL}/api/quizResult/getAll`;
 const deleteClass = `${BASE_URL}/api/quizResult/indel`;
 
 const getAllClasses = async () => {
     try {
         const token = await getToken();
         const response = await axios.get(getClass, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching classes:", error);
+        throw error;
+    }
+};
+const getAllClassesSingle = async () => {
+    try {
+        const token = await getToken();
+        const response = await axios.get(getClassSingle, {
             headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
@@ -54,4 +70,4 @@ const deleteClassRecord = async (data) => {
     }
 };
 
-export { getAllClasses, saveClass, deleteClassRecord };
+export { getAllClasses, saveClass, deleteClassRecord,getAllClassesSingle };
