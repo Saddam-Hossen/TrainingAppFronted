@@ -87,6 +87,10 @@ const OffCanvasExample = ({ name, ...props }) => {
                 <a href="QuizLink" className="text-decoration-none text-reset d-block">Class Link</a>
             </li>
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
+                <a href="QuizAttendance" className="text-decoration-none text-reset d-block">Attendance</a>
+            </li>
+           
+            <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
                 <a href="/" className="text-decoration-none text-reset d-block">Logout</a>
             </li>
             </ul>
