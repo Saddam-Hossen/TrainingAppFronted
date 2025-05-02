@@ -123,6 +123,7 @@ const QuizAttendance = () => {
                     <th>Date & Time</th>
                     <th>Class Name</th>
                     <th>Class Number</th>
+                    <th>id Number</th>
                     <th>Status</th>
                     <th>Late Reason</th>
                     <th>Attendance Time</th>
@@ -136,6 +137,7 @@ const QuizAttendance = () => {
                         <td>{new Date(att.datetime).toLocaleString()}</td>
                         <td>{att.className || '-'}</td>
                         <td>{att.classNumber || '-'}</td>
+                        <td>{att.idNumber || '-'}</td>
                         <td>
                           <span
                             className={
