@@ -8,6 +8,9 @@ import * as XLSX from 'xlsx';
 import '../assets/App.css';
 
 const QuizResult = () => {
+    const [showErrorModal, setShowErrorModal] = useState(false);
+const [errorMessage, setErrorMessage] = useState('');
+
     const [students, setStudents] = useState([]);
     const [totalClasses, setTotalClasses] = useState([]);
     const [show, setShow] = useState(false);
@@ -26,6 +29,7 @@ const QuizResult = () => {
         const fetchData = async () => {
             try {
                 const result = await getAllClasses();
+               // console.log("Fetched classes:", result);
                 setClasses(result);
                 setTotalClasses(await getAllQuizNotices());
                 setStudents(await getAllEmployees());
@@ -39,9 +43,9 @@ const QuizResult = () => {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (!file) return;
-
+    
         setFileName(file.name);
-
+    
         const reader = new FileReader();
         reader.onload = (evt) => {
             const data = new Uint8Array(evt.target.result);
@@ -49,14 +53,39 @@ const QuizResult = () => {
             const sheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[sheetName];
             const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
-            console.log("Parsed Excel Data:", jsonData);
-            setExcelData(jsonData);
+    
+            // Normalize headers to lowercase to avoid mismatch due to casing
+            const normalizedData = jsonData.map(row => {
+                const normalizedRow = {};
+                Object.keys(row).forEach(key => {
+                    normalizedRow[key.trim().toLowerCase()] = row[key];
+                });
+                return normalizedRow;
+            });
+    
+            const requiredFields = ['classname', 'classnumber', 'idnumber', 'totalmarks', 'obtainmarks', 'merit'];
+            const isValid = normalizedData.every(row =>
+                requiredFields.every(field => row[field] !== undefined && row[field] !== '')
+            );
+    
+            if (!isValid) {
+                setErrorMessage(
+                    "Required columns are missing:\n- className\n- classNumber\n- idNumber\n- totalMarks\n- obtainMarks\n- merit"
+                );
+                                setShowErrorModal(true);
+                setExcelData([]);
+                return;
+            }
+    
+            setExcelData(normalizedData);
         };
+    
         reader.readAsArrayBuffer(file);
     };
+    
 
     const handleSaveAll = async () => {
-        console.log("Saving all data:", excelData);
+       // console.log("Saving all data:", excelData);
 
         try {
             for (const record of excelData) {
@@ -169,6 +198,25 @@ const QuizResult = () => {
                     </Table>
                 </div>
             </div>
+            <Modal show={showErrorModal} onHide={() => setShowErrorModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Invalid Excel File</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{ color: 'black' }}>
+                    <ul>
+                        {errorMessage.split('\n').map((msg, idx) => (
+                            <li key={idx}>{msg}</li>
+                        ))}
+                    </ul>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="danger" onClick={() => setShowErrorModal(false)}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+
         </>
     );
 };
