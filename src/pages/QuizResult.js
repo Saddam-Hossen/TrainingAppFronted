@@ -54,7 +54,7 @@ const [errorMessage, setErrorMessage] = useState('');
             const worksheet = workbook.Sheets[sheetName];
             const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
     
-            // Normalize headers to lowercase to avoid mismatch due to casing
+            // Normalize headers to lowercase
             const normalizedData = jsonData.map(row => {
                 const normalizedRow = {};
                 Object.keys(row).forEach(key => {
@@ -64,15 +64,22 @@ const [errorMessage, setErrorMessage] = useState('');
             });
     
             const requiredFields = ['classname', 'classnumber', 'idnumber', 'totalmarks', 'obtainmarks', 'merit'];
-            const isValid = normalizedData.every(row =>
-                requiredFields.every(field => row[field] !== undefined && row[field] !== '')
-            );
     
-            if (!isValid) {
-                setErrorMessage(
-                    "Required columns are missing:\n- className\n- classNumber\n- idNumber\n- totalMarks\n- obtainMarks\n- merit"
-                );
-                                setShowErrorModal(true);
+            // Track missing fields
+            let allFieldsPresent = true;
+            let missingFieldsSummary = '';
+    
+            normalizedData.forEach((row, index) => {
+                const missingFields = requiredFields.filter(field => row[field] === undefined || row[field] === '');
+                if (missingFields.length > 0) {
+                    allFieldsPresent = false;
+                    missingFieldsSummary += `Row ${index + 2} is missing: ${missingFields.join(', ')}`; // +2 for Excel-like row numbering
+                }
+            });
+    
+            if (!allFieldsPresent) {
+                setErrorMessage("The following errors were found in the Excel file:\n" + missingFieldsSummary);
+                setShowErrorModal(true);
                 setExcelData([]);
                 return;
             }
@@ -82,6 +89,7 @@ const [errorMessage, setErrorMessage] = useState('');
     
         reader.readAsArrayBuffer(file);
     };
+    
     
 
     const handleSaveAll = async () => {
@@ -203,12 +211,23 @@ const [errorMessage, setErrorMessage] = useState('');
                     <Modal.Title>Invalid Excel File</Modal.Title>
                 </Modal.Header>
                 <Modal.Body style={{ color: 'black' }}>
-                    <ul>
-                        {errorMessage.split('\n').map((msg, idx) => (
-                            <li key={idx}>{msg}</li>
-                        ))}
-                    </ul>
+                    {(() => {
+                        const lines = errorMessage.split('\n');
+                        const firstLine = lines[0];
+                        const otherLines = lines.slice(1);
+                        return (
+                            <>
+                                <p style={{ fontWeight: 'bold', color: 'red' }}>{firstLine}</p>
+                                <ol>
+                                    {otherLines.map((msg, idx) => (
+                                        <li key={idx}>{msg}</li>
+                                    ))}
+                                </ol>
+                            </>
+                        );
+                    })()}
                 </Modal.Body>
+
                 <Modal.Footer>
                     <Button variant="danger" onClick={() => setShowErrorModal(false)}>
                         Close
