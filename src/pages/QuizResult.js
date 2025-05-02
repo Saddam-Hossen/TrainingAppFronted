@@ -56,20 +56,18 @@ const [errorMessage, setErrorMessage] = useState('');
     
             const requiredFields = ['className', 'classNumber', 'idNumber', 'totalMarks', 'obtainMarks', 'merit'];
     
-            // Track missing fields
-            let allFieldsPresent = true;
-            let missingFieldsSummary = '';
-    
+            const errorDetails = [];
+
             jsonData.forEach((row, index) => {
-                const missingFields = requiredFields.filter(field => row[field] === undefined || row[field] === '');
-                if (missingFields.length > 0) {
-                    allFieldsPresent = false;
-                    missingFieldsSummary += `Row ${index + 2} is missing: ${missingFields.join(', ')}`; // +2 for Excel-like row numbering
-                }
+                requiredFields.forEach(field => {
+                    if (row[field] === undefined || row[field] === '') {
+                        errorDetails.push(`Row ${index + 2} is missing: ${field}`);
+                    }
+                });
             });
     
-            if (!allFieldsPresent) {
-                setErrorMessage("The following errors were found in the Excel file:\n" + missingFieldsSummary);
+            if (errorDetails.length > 0) {
+                setErrorMessage(['Required fields are missing:', ...errorDetails].join('\n'));
                 setShowErrorModal(true);
                 setExcelData([]);
                 return;
@@ -209,11 +207,22 @@ const [errorMessage, setErrorMessage] = useState('');
                         return (
                             <>
                                 <p style={{ fontWeight: 'bold', color: 'red' }}>{firstLine}</p>
+                                <p style={{ fontWeight: 'bold' }}>Column Name should be sequentially: className , classNumber , idNumber , totalMarks , obtainMarks , merit .</p>
+                                <p style={{ fontWeight: 'bold' }}>Please check the following:</p>
+                                <p style={{ fontWeight: 'bold' }}>Details:</p>
                                 <ol>
                                     {otherLines.map((msg, idx) => (
-                                        <li key={idx}>{msg}</li>
+                                        <li key={idx}>
+                                            {msg.split('\n').map((line, i) => (
+                                                <span key={i}>
+                                                    {line}
+                                                    <br />
+                                                </span>
+                                            ))}
+                                        </li>
                                     ))}
                                 </ol>
+
                             </>
                         );
                     })()}
