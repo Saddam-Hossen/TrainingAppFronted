@@ -54,22 +54,13 @@ const [errorMessage, setErrorMessage] = useState('');
             const worksheet = workbook.Sheets[sheetName];
             const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
     
-            // Normalize headers to lowercase
-            const normalizedData = jsonData.map(row => {
-                const normalizedRow = {};
-                Object.keys(row).forEach(key => {
-                    normalizedRow[key.trim().toLowerCase()] = row[key];
-                });
-                return normalizedRow;
-            });
-    
-            const requiredFields = ['classname', 'classnumber', 'idnumber', 'totalmarks', 'obtainmarks', 'merit'];
+            const requiredFields = ['className', 'classNumber', 'idNumber', 'totalMarks', 'obtainMarks', 'merit'];
     
             // Track missing fields
             let allFieldsPresent = true;
             let missingFieldsSummary = '';
     
-            normalizedData.forEach((row, index) => {
+            jsonData.forEach((row, index) => {
                 const missingFields = requiredFields.filter(field => row[field] === undefined || row[field] === '');
                 if (missingFields.length > 0) {
                     allFieldsPresent = false;
@@ -84,7 +75,7 @@ const [errorMessage, setErrorMessage] = useState('');
                 return;
             }
     
-            setExcelData(normalizedData);
+            setExcelData(jsonData);
         };
     
         reader.readAsArrayBuffer(file);
