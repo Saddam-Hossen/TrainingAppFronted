@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, Form, Table } from 'react-bootstrap';
 import Navbar from "../layouts/Navbar";
+import AdminPage from '../layouts/AdminPage';
 import { saveQuizNotice, getAllQuizNotices, updateQuizNoticeStatus, deleteQuizNotice } from '../services/QuizNoticeService';
 import { FaTrash, FaToggleOn, FaToggleOff } from 'react-icons/fa';
-import AdminPage from '../layouts/AdminPage';
-import '../assets/App.css'; // Adjust the path if needed
+import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
+import '../assets/App.css';
 
-// Helper function to render clickable links and preserve line breaks
+// Helper to render links and preserve line breaks
 const renderTextWithLinks = (text) => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   const lines = text.split('\n');
@@ -33,10 +34,12 @@ const renderTextWithLinks = (text) => {
 };
 
 const QuizNotice = () => {
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedNoticeId, setSelectedNoticeId] = useState(null);
   const [show, setShow] = useState(false);
   const [notices, setNotices] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedNoticeId, setSelectedNoticeId] = useState(null);
+  const [expandedStates, setExpandedStates] = useState({});
+
   const [formData, setFormData] = useState({
     name: '',
     datetime: '',
@@ -65,6 +68,10 @@ const QuizNotice = () => {
     }
   };
 
+  const toggleExpanded = (index) => {
+    setExpandedStates(prev => ({ ...prev, [index]: !prev[index] }));
+  };
+
   useEffect(() => {
     const fetchNotices = async () => {
       try {
@@ -83,7 +90,7 @@ const QuizNotice = () => {
       <div className="container" style={{ paddingTop: "20px", display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Button variant="primary" onClick={handleShow}>Add Notice</Button>
 
-        {/* Modal for adding notice */}
+        {/* Modal for Adding Notice */}
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Notice Information</Modal.Title>
@@ -141,81 +148,104 @@ const QuizNotice = () => {
           </Modal.Footer>
         </Modal>
 
-        <div className="table-container">
-            <Table
-                striped
-                bordered
-                hover
-                responsive="sm"
-                className="custom-table"
-            >
-                <thead className="table-light">
-                <tr>
-                    <th className="table-dark-cell">#</th>
-                    <th className="table-dark-cell">Notification Name</th>
-                    <th className="table-dark-cell">Notification DateTime</th>
-                    <th className="table-dark-cell">Notification Text</th>
-                    <th className="table-dark-cell">Status</th>
-                    <th className="table-dark-cell">Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                {notices.map((notice, index) => (
-                    <tr key={notice.id || index} style={{ transition: 'background-color 0.3s ease' }}>
+        {/* Notice Table */}
+        <div className="table-container mt-4">
+          <Table striped bordered hover responsive="sm" className="custom-table">
+            <thead className="table-light">
+              <tr>
+                <th className="table-dark-cell">#</th>
+                <th className="table-dark-cell">Notification Name</th>
+                <th className="table-dark-cell">Notification DateTime</th>
+                <th className="table-dark-cell">Notification Text</th>
+                <th className="table-dark-cell">Status</th>
+                <th className="table-dark-cell">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {notices.map((notice, index) => {
+                const lines = notice.text.split('\n');
+                const isExpanded = expandedStates[index];
+                const visibleLines = isExpanded ? lines : lines.slice(0, 4);
+
+                return (
+                  <tr key={notice.id || index}>
                     <td className="table-dark-cell">{index + 1}</td>
                     <td className="table-dark-cell">{notice.name}</td>
                     <td className="table-dark-cell">{new Date(notice.datetime).toLocaleString()}</td>
-                    <td className="table-dark-cell text-start">{renderTextWithLinks(notice.text)}</td>
+                    <td className="text-start" style={{ whiteSpace: 'pre-wrap' }}>
+                      {visibleLines.map((line, idx) => (
+                        <div key={idx}>{renderTextWithLinks(line)}</div>
+                      ))}
+                      {lines.length > 2 && (
+                        <span
+                          onClick={() => toggleExpanded(index)}
+                          style={{
+                            color: '#007bff',
+                            textDecoration: 'underline',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            marginTop: '4px',
+                            fontWeight: '500'
+                          }}
+                        >
+                          {isExpanded ? (
+                            <>
+                              <BsChevronUp className="me-1" /> Read Less
+                            </>
+                          ) : (
+                            <>
+                              <BsChevronDown className="me-1" /> Read More
+                            </>
+                          )}
+                        </span>
+                      )}
+                    </td>
                     <td className="table-dark-cell">
-                        {notice.status}
-                        <Button
+                      {notice.status}
+                      <Button
                         variant="link"
                         size="sm"
                         onClick={async () => {
-                            const newStatus = notice.status === "Active" ? "Inactive" : "Active";
-                            try {
+                          const newStatus = notice.status === "Active" ? "Inactive" : "Active";
+                          try {
                             const updatedNotice = await updateQuizNoticeStatus(notice.id, newStatus);
-                            const updatedNotices = notices.map(n =>
-                                n.id === notice.id ? updatedNotice : n
-                            );
-                            setNotices(updatedNotices);
-                            } catch (err) {
+                            setNotices(notices.map(n => n.id === notice.id ? updatedNotice : n));
+                          } catch (err) {
                             alert("❌ Failed to update status");
-                            }
+                          }
                         }}
-                        >
+                      >
                         {notice.status === "Active" ? <FaToggleOn size={20} /> : <FaToggleOff size={20} />}
-                        </Button>
+                      </Button>
                     </td>
                     <td className="table-dark-cell">
-                        <Button
+                      <Button
                         variant="outline-danger"
                         size="sm"
                         style={{ borderColor: 'transparent', boxShadow: 'none' }}
                         onClick={() => {
-                            setSelectedNoticeId(notice.id);
-                            setShowDeleteModal(true);
+                          setSelectedNoticeId(notice.id);
+                          setShowDeleteModal(true);
                         }}
-                        >
+                      >
                         <FaTrash />
-                        </Button>
+                      </Button>
                     </td>
-                    </tr>
-                ))}
-                </tbody>
-            </Table>
-            </div>
-
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+        </div>
       </div>
 
-      {/* Delete confirmation modal */}
+      {/* Delete Modal */}
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Confirm Deletion</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          Are you sure you want to delete this quiz notice?
-        </Modal.Body>
+        <Modal.Body>Are you sure you want to delete this quiz notice?</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>Cancel</Button>
           <Button
