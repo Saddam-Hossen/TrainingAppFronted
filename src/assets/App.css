@@ -95,3 +95,16 @@ body.light-theme .form-control {
   color: #000000 !important;
   border: 1px solid #ced4da !important;
 }
+
+/* Placeholder styles for dark theme */
+body.dark-theme ::placeholder {
+    color: #b0b0b0 !important; /* Light gray for readability */
+    opacity: 1 !important;     /* Make sure it's fully visible */
+  }
+  
+  /* Placeholder styles for light theme */
+  body.light-theme ::placeholder {
+    color: #6c757d !important; /* Bootstrap default gray */
+    opacity: 1 !important;
+  }
+  
