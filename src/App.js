@@ -8,29 +8,35 @@ const App = () => {
 
   // ✅ Google Translate script loader
   useEffect(() => {
-    window.addEventListener("error", function (e) {
-      if (e.message === "Script error.") {
-        e.preventDefault();
-        return false;
-      }
-    });
+    const addGoogleTranslateScript = () => {
+      if (document.getElementById("google-translate-script")) return;
   
-    const script = document.createElement("script");
-    script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-    script.async = true;
-    document.body.appendChild(script);
+      const script = document.createElement("script");
+      script.id = "google-translate-script";
+      script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+    };
   
     window.googleTranslateElementInit = () => {
-      new window.google.translate.TranslateElement(
-        {
-          pageLanguage: "en",
-          includedLanguages: "en,bn,hi,fr,de",
-          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
-        },
-        "google_translate_element"
-      );
+      if (window.google && window.google.translate) {
+        new window.google.translate.TranslateElement(
+          {
+            pageLanguage: "en",
+            includedLanguages: "en,bn,hi,fr,de",
+            layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+          },
+          "google_translate_element"
+        );
+      }
     };
+  
+    addGoogleTranslateScript();
   }, []);
+  
+  
+  
   
   
 
@@ -85,7 +91,10 @@ const App = () => {
   return (
     <>
       {/* Global Translate Dropdown */}
-      <div id="google_translate_element" style={{ position: "fixed", top: 10, right: 10, zIndex: 2000 }}></div>
+      <div
+  id="google_translate_element"
+  style={{ position: "fixed", top: 10, right: 10, zIndex: 9999 }}
+></div>
       <AppRoutes />
     </>
   );

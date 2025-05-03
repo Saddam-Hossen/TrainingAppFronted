@@ -87,8 +87,8 @@ const OffCanvasExample = ({ name, ...props }) => {
                 {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"} {/* Display text based on current theme */}
               </span>
             </li>
-
-
+            
+        
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
               <a href="/" className="custom-link">Logout</a>
             </li>
