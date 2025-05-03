@@ -59,3 +59,39 @@ body.dark-theme {
     display: block;
   }
   
+
+  /* Modal Title and Label Styles */
+
+body.dark-theme .modal-title,
+body.dark-theme .form-label {
+  color: #ececf1 !important;
+}
+
+body.light-theme .modal-title,
+body.light-theme .form-label {
+  color: #000000 !important;
+}
+
+/* Optional: Modal background color */
+body.dark-theme .modal-content {
+  background-color: #444654 !important;
+  color: #ececf1 !important;
+}
+
+body.light-theme .modal-content {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Optional: Input field background for consistency */
+body.dark-theme .form-control {
+  background-color: #3c3f4a !important;
+  color: #ececf1 !important;
+  border: 1px solid #5a5a5a !important;
+}
+
+body.light-theme .form-control {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #ced4da !important;
+}

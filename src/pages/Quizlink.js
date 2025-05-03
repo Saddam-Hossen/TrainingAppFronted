@@ -69,7 +69,7 @@ const Quizlink = () => {
         <>
             <AdminPage />
             <div className="container mt-0" style={{ paddingTop: "30px" }}>
-                <Button variant="primary" onClick={handleShow}>Add Class Link</Button>
+                <Button variant="primary" onClick={handleShow} style={{ marginBottom: "20px" }}>Add Class Link</Button>
 
                 {/* Modal */}
                 <Modal show={show} onHide={handleClose}>
