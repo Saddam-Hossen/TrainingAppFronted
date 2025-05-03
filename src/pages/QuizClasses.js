@@ -182,7 +182,7 @@ const QuizClasses = () => {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="5" className="text-center">No class notices added yet.</td>
+                                <td colSpan="5" className="text-center">No class added yet.</td>
                             </tr>
                         )}
                     </tbody>

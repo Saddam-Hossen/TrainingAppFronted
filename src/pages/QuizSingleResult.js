@@ -30,7 +30,7 @@ const QuizSingleResult = () => {
           </h4>
 
           {classes.length === 0 ? (
-            <p className="text-muted text-center">No classes added yet.</p>
+            <p className="text-muted text-center">No result added yet.</p>
           ) : (
             <div className="table-container">
             <Table

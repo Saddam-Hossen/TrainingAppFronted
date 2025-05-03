@@ -160,7 +160,7 @@ const Quizlink = () => {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="4" className="text-center">No quiz links added yet.</td>
+                                <td colSpan="4" className="text-center">No class links added yet.</td>
                             </tr>
                         )}
                     </tbody>
