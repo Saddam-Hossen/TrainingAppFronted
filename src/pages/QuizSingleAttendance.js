@@ -21,6 +21,7 @@ const QuizSingleAttendance = () => {
     const fetchData = async () => {
       try {
         const result = await getAllAttendanceSingle();
+        result.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
         setClasses(result);
       } catch (err) {
         console.error("Failed to fetch data:", err);
@@ -115,7 +116,7 @@ const QuizSingleAttendance = () => {
              >
                 <thead className="table-light">
                   <tr>
-                    <th>Date & Time</th>
+                    <th> Class starting Date & Time</th>
                     <th>Class Name</th>
                     <th>Class Number</th>
                     <th>Status</th>
@@ -178,7 +179,7 @@ const QuizSingleAttendance = () => {
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>Date & Time</Form.Label>
+              <Form.Label>When did you join the class?</Form.Label>
               <Form.Control
                 type="datetime-local"
                 value={modalData.datetime}

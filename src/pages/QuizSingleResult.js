@@ -11,7 +11,7 @@ const QuizSingleResult = () => {
     const fetchData = async () => {
       try {
         const result = await getAllClassesSingle();
-        console.log("Fetched classes:", result); // Debugging line
+        result.sort((a, b) => new Date(b.classNumber) - new Date(a.classNumber));
         setClasses(result);
       } catch (err) {
         console.error("Failed to fetch data:", err);

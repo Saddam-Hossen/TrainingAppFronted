@@ -9,32 +9,31 @@ import '../assets/App.css';
 
 const QuizResult = () => {
     const [showErrorModal, setShowErrorModal] = useState(false);
-const [errorMessage, setErrorMessage] = useState('');
-
+    const [errorMessage, setErrorMessage] = useState('');
     const [students, setStudents] = useState([]);
     const [totalClasses, setTotalClasses] = useState([]);
     const [show, setShow] = useState(false);
     const [classes, setClasses] = useState([]);
     const [excelData, setExcelData] = useState([]);
-    const [fileName, setFileName] = useState("");
+    const [fileName, setFileName] = useState('');
+    const [selectedClassName, setSelectedClassName] = useState('');
 
     const handleShow = () => setShow(true);
     const handleClose = () => {
         setShow(false);
         setExcelData([]);
-        setFileName("");
+        setFileName('');
     };
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const result = await getAllClasses();
-               // console.log("Fetched classes:", result);
                 setClasses(result);
                 setTotalClasses(await getAllQuizNotices());
                 setStudents(await getAllEmployees());
             } catch (err) {
-                console.error("Failed to fetch data:", err);
+                console.error('Failed to fetch data:', err);
             }
         };
         fetchData();
@@ -43,9 +42,9 @@ const [errorMessage, setErrorMessage] = useState('');
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (!file) return;
-    
+
         setFileName(file.name);
-    
+
         const reader = new FileReader();
         reader.onload = (evt) => {
             const data = new Uint8Array(evt.target.result);
@@ -53,9 +52,8 @@ const [errorMessage, setErrorMessage] = useState('');
             const sheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[sheetName];
             const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
-    
+
             const requiredFields = ['className', 'classNumber', 'idNumber', 'totalMarks', 'obtainMarks', 'merit'];
-    
             const errorDetails = [];
 
             jsonData.forEach((row, index) => {
@@ -65,25 +63,21 @@ const [errorMessage, setErrorMessage] = useState('');
                     }
                 });
             });
-    
+
             if (errorDetails.length > 0) {
                 setErrorMessage(['Required fields are missing:', ...errorDetails].join('\n'));
                 setShowErrorModal(true);
                 setExcelData([]);
                 return;
             }
-    
+
             setExcelData(jsonData);
         };
-    
+
         reader.readAsArrayBuffer(file);
     };
-    
-    
 
     const handleSaveAll = async () => {
-       // console.log("Saving all data:", excelData);
-
         try {
             for (const record of excelData) {
                 await saveClass(record);
@@ -92,8 +86,8 @@ const [errorMessage, setErrorMessage] = useState('');
             setClasses(updatedClasses);
             handleClose();
         } catch (error) {
-            console.error("Error saving Excel data:", error);
-            alert("Failed to save data.");
+            console.error('Error saving Excel data:', error);
+            alert('Failed to save data.');
         }
     };
 
@@ -103,15 +97,32 @@ const [errorMessage, setErrorMessage] = useState('');
             const updatedClasses = await getAllClasses();
             setClasses(updatedClasses);
         } catch (error) {
-            console.error("Delete failed:", error);
+            console.error('Delete failed:', error);
         }
     };
+
+    const uniqueClassNames = [...new Set(classes.map(cls => cls.className))];
+    const filteredClasses = selectedClassName
+        ? classes.filter(cls => cls.className === selectedClassName)
+        : classes;
 
     return (
         <>
             <AdminPage />
-            <div className="container mt-0" style={{ paddingTop: "30px" }}>
-                <Button variant="primary" onClick={handleShow}>Import</Button>
+            <div className="container mt-0" style={{ paddingTop: '30px' }}>
+                <div className="d-flex align-items-center gap-3 mb-3" style={{ width: '40%' }}>
+                    <Button variant="primary" onClick={handleShow}>Import</Button>
+                    <Form.Select
+                        value={selectedClassName}
+                        onChange={(e) => setSelectedClassName(e.target.value)}
+                        style={{ flex: 1 }}
+                    >
+                        <option value="">All Classes</option>
+                        {uniqueClassNames.map((name, idx) => (
+                            <option key={idx} value={name}>{name}</option>
+                        ))}
+                    </Form.Select>
+                </div>
 
                 <Modal show={show} onHide={handleClose} size="lg">
                     <Modal.Header closeButton>
@@ -165,8 +176,8 @@ const [errorMessage, setErrorMessage] = useState('');
                             </tr>
                         </thead>
                         <tbody>
-                            {classes.length > 0 ? (
-                                classes.map((cls, index) => (
+                            {filteredClasses.length > 0 ? (
+                                filteredClasses.map((cls, index) => (
                                     <tr key={index}>
                                         <td>{cls.className}</td>
                                         <td>{cls.classNumber}</td>
@@ -195,6 +206,7 @@ const [errorMessage, setErrorMessage] = useState('');
                     </Table>
                 </div>
             </div>
+
             <Modal show={showErrorModal} onHide={() => setShowErrorModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Invalid Excel File</Modal.Title>
@@ -207,7 +219,7 @@ const [errorMessage, setErrorMessage] = useState('');
                         return (
                             <>
                                 <p style={{ fontWeight: 'bold', color: 'red' }}>{firstLine}</p>
-                                <p style={{ fontWeight: 'bold' }}>Column Name should be sequentially: className , classNumber , idNumber , totalMarks , obtainMarks , merit .</p>
+                                <p style={{ fontWeight: 'bold' }}>Column Name should be sequentially: className, classNumber, idNumber, totalMarks, obtainMarks, merit.</p>
                                 <p style={{ fontWeight: 'bold' }}>Please check the following:</p>
                                 <p style={{ fontWeight: 'bold' }}>Details:</p>
                                 <ol>
@@ -222,20 +234,16 @@ const [errorMessage, setErrorMessage] = useState('');
                                         </li>
                                     ))}
                                 </ol>
-
                             </>
                         );
                     })()}
                 </Modal.Body>
-
                 <Modal.Footer>
                     <Button variant="danger" onClick={() => setShowErrorModal(false)}>
                         Close
                     </Button>
                 </Modal.Footer>
             </Modal>
-
-
         </>
     );
 };

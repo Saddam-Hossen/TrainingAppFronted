@@ -3,9 +3,12 @@ import { getToken } from "./Auth"; // assumes you have a getToken() function rea
 
 const BASE_URL = process.env.REACT_APP_API_URL_UserService || `http://${window.location.hostname}:3083`;
 const InsertAttendance = `${BASE_URL}/api/quizAttendance/insert`;
+const InsertAttendanceFromAdmin = `${BASE_URL}/api/quizAttendance/insertFromAdmin`;
+const updateAttendanceApi= `${BASE_URL}/api/quizAttendance/update`;
+
 const GetAllAttendanceSingle = `${BASE_URL}/api/quizAttendance/getAll`;
 const GetAllAttendance = `${BASE_URL}/api/quizAttendance/getAllAdmin`;
-const DeleteAttendance = `${BASE_URL}/api/quizAttendance/indel`;
+const DeleteAttendance = `${BASE_URL}/api/quizAttendance/delete`;
 
 const getAllAttendance = async () => {
   try {
@@ -53,8 +56,38 @@ const saveAttendance = async (formData) => {
     throw error;
   }
 };
+const saveAttendanceFromAdmin = async (formData) => {
+  try {
+    const token = await getToken();
+    const response = await axios.post(InsertAttendanceFromAdmin, formData, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("❌ Error saving attendance:", error);
+    throw error;
+  }
+};
+const updateAttendance = async (formData) => {
+  try {
+    const token = await getToken();
+    const response = await axios.post(updateAttendanceApi, formData, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("❌ Error saving attendance:", error);
+    throw error;
+  }
+};
 
-const deleteAttendanceRecord = async (data) => {
+const deleteAttendance = async (data) => {
   try {
     const token = await getToken();
     const response = await axios.post(DeleteAttendance, data, {
@@ -70,4 +103,4 @@ const deleteAttendanceRecord = async (data) => {
   }
 };
 
-export { getAllAttendance, saveAttendance, deleteAttendanceRecord,getAllAttendanceSingle };
+export { getAllAttendance, saveAttendance, deleteAttendance,getAllAttendanceSingle,updateAttendance,saveAttendanceFromAdmin };

@@ -76,6 +76,7 @@ const QuizNotice = () => {
     const fetchNotices = async () => {
       try {
         const data = await getAllQuizNotices();
+        data.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
         setNotices(data);
       } catch (err) {
         console.error("❌ Error fetching quiz notices:", err);
@@ -165,7 +166,7 @@ const QuizNotice = () => {
               {notices.map((notice, index) => {
                 const lines = notice.text.split('\n');
                 const isExpanded = expandedStates[index];
-                const visibleLines = isExpanded ? lines : lines.slice(0, 4);
+                const visibleLines = isExpanded ? lines : lines.slice(0, 2);
 
                 return (
                   <tr key={notice.id || index}>

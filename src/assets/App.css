@@ -42,3 +42,16 @@
 }
 
 
+
+@media (max-width: 576px) {
+    .custom-table th,
+    .custom-table td {
+      font-size: 0.85rem;
+      padding: 0.4rem;
+    }
+  
+    .modal-title {
+      font-size: 1.1rem;
+    }
+  }
+  

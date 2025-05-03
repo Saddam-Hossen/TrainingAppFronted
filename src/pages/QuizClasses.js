@@ -57,6 +57,8 @@ const QuizClasses = () => {
         const fetchData = async () => {
             try {
                 const result = await getAllQuizNotices();
+                // Sort the notices by datetime in descending order
+                result.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
                 setNotices(result);
             } catch (err) {
                 console.error("Failed to fetch data:", err);
