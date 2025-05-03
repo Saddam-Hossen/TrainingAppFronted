@@ -37,6 +37,7 @@ const QuizClasses = () => {
                 trainerName: ''
             });
             handleClose();
+            window.location.reload(); // Refresh the page to reflect changes
         } catch (error) {
             console.error("Failed to save notice:", error);
             alert("Something went wrong while saving.");

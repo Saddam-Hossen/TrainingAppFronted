@@ -81,12 +81,13 @@ const QuizSingleAttendance = () => {
   const isButtonDisabled = (attDatetime) => {
     const classTime = moment(attDatetime);
     const currentTime = moment().tz('Asia/Dhaka');
+    console.log(classTime+" "+currentTime);
     
     // Condition 1: If current time is before class time
     const isBeforeClassTime = currentTime.isBefore(classTime);
   
     // Condition 2: If current time is more than 16 hours after class time
-    const isAfter16Hours = currentTime.isAfter(classTime.add(16, 'hours'));
+    const isAfter16Hours = currentTime.isAfter(classTime.add(3, 'hours'));
   
     // Return true if any condition is met (disable the button)
     return isBeforeClassTime || isAfter16Hours;
