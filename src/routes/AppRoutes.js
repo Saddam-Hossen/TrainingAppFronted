@@ -34,6 +34,7 @@ import QuizSingleFeedback from "../pages/QuizSingleFeedback";
 import TestPage from "../pages/TestPage";
 import QuizAttendance from "../pages/QuizAttendance";
 import { ThemeProvider } from "../context/ThemeContext"; // Import ThemeProvider
+
 function App() {
   return (
   

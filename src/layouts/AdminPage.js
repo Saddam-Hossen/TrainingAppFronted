@@ -88,6 +88,7 @@ const OffCanvasExample = ({ name, ...props }) => {
               </span>
             </li>
 
+
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
               <a href="/" className="custom-link">Logout</a>
             </li>

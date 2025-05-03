@@ -107,4 +107,16 @@ body.dark-theme ::placeholder {
     color: #6c757d !important; /* Bootstrap default gray */
     opacity: 1 !important;
   }
+
+  .goog-te-banner-frame.skiptranslate,
+.goog-te-gadget-simple {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+body {
+  top: 0 !important;
+}
+
   

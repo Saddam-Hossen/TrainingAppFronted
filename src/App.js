@@ -1,47 +1,68 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AppRoutes from "./routes/AppRoutes";
 import { isTokenExpired, checkAndRefreshToken } from "./services/Auth";
-import { useEffect ,useState } from "react";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  let inactivityTimer = null; // Timer reference
+  let inactivityTimer = null;
+
+  // ✅ Google Translate script loader
   useEffect(() => {
-    // Check if user is logged in
+    window.addEventListener("error", function (e) {
+      if (e.message === "Script error.") {
+        e.preventDefault();
+        return false;
+      }
+    });
+  
+    const script = document.createElement("script");
+    script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+    script.async = true;
+    document.body.appendChild(script);
+  
+    window.googleTranslateElementInit = () => {
+      new window.google.translate.TranslateElement(
+        {
+          pageLanguage: "en",
+          includedLanguages: "en,bn,hi,fr,de",
+          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+        },
+        "google_translate_element"
+      );
+    };
+  }, []);
+  
+  
+
+  // ✅ Auth check
+  useEffect(() => {
     const storedAuthToken = localStorage.getItem("authToken");
     if (storedAuthToken && !isTokenExpired()) {
       setIsAuthenticated(true);
     }
 
     if (isAuthenticated) {
-      console.log("Starting global token refresh interval...");
       const interval = setInterval(checkAndRefreshToken, 60 * 1000);
-
-      return () => {
-        console.log("Clearing global token refresh interval...");
-        clearInterval(interval);
-      };
+      return () => clearInterval(interval);
     }
-  }, [isAuthenticated]); // ✅ Runs when `isAuthenticated` changes
+  }, [isAuthenticated]);
 
-   // ✅ Detect user activity (reset inactivity timer)
-   useEffect(() => {
+  // ✅ Auto logout after inactivity
+  useEffect(() => {
     if (isAuthenticated) {
       const resetTimer = () => {
         clearTimeout(inactivityTimer);
         inactivityTimer = setTimeout(() => {
-          console.log("User inactive for 10 minutes. Logging out...");
           logoutUser();
-        }, 20 * 60 * 1000); // 10 minutes (600,000 ms)
+        }, 20 * 60 * 1000); // 20 minutes
       };
 
-      // Listen to user interactions
       window.addEventListener("mousemove", resetTimer);
       window.addEventListener("keypress", resetTimer);
       window.addEventListener("click", resetTimer);
       window.addEventListener("scroll", resetTimer);
 
-      resetTimer(); // Start the timer initially
+      resetTimer();
 
       return () => {
         window.removeEventListener("mousemove", resetTimer);
@@ -53,16 +74,21 @@ const App = () => {
     }
   }, [isAuthenticated]);
 
-  // ✅ Logout function
   const logoutUser = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("refreshToken");
     sessionStorage.clear();
     setIsAuthenticated(false);
     window.location.href = "/";
-
   };
-  return <AppRoutes />;
+
+  return (
+    <>
+      {/* Global Translate Dropdown */}
+      <div id="google_translate_element" style={{ position: "fixed", top: 10, right: 10, zIndex: 2000 }}></div>
+      <AppRoutes />
+    </>
+  );
 };
 
 export default App;
