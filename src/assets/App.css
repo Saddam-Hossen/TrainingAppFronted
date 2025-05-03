@@ -1,57 +1,61 @@
-/* styles.css */
+/* App.css */
 
-.table-container {
-    width: 100%;
-    max-height: 700px;
-    overflow-y: scroll;
-    overflow-x: scroll;
-    margin-top: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-    transition: all 0.3s ease-in-out;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-}
-
-.table-container::-webkit-scrollbar {
-    display: none; /* Chrome, Safari */
-}
-
-.custom-table {
-    min-width: 100%;
-    table-layout: auto;
-    border-radius: 8px;
-    transition: all 0.3s ease-in-out;
-}
-
-.table-dark-cell {
+body.dark-theme {
     background-color: #343541 !important;
     color: #ececf1 !important;
-}
-.custom-table td,
-.custom-table th {
-    background-color: #343541 !important;
-    color: #ececf1 !important;
-}
-/* Make modal title and form labels black */
-.modal-title,
-.modal-body label,
-.modal-body .form-label {
-  color: #000 !important;
-}
-
-
-
-@media (max-width: 576px) {
-    .custom-table th,
-    .custom-table td {
-      font-size: 0.85rem;
-      padding: 0.4rem;
-    }
+  }
   
-    .modal-title {
-      font-size: 1.1rem;
-    }
+  body.dark-theme td,
+  body.dark-theme th {
+    background-color: #343541 !important;
+    color: #ececf1 !important;
+  }
+  
+  body.dark-theme a {
+    color: #ececf1 !important;
+  }
+  
+  body.light-theme {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+  
+  body.light-theme td,
+  body.light-theme th {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+  
+  body.light-theme a {
+    color: #000000 !important;
+  }
+  
+  /* Custom list item styles */
+  .custom-list-item {
+    background-color: transparent;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  body.dark-theme .custom-list-item {
+    color: #ececf1;
+  }
+  
+  body.dark-theme .custom-list-item:hover {
+    background-color: #565869;
+  }
+  
+  body.light-theme .custom-list-item {
+    color: #000000;
+  }
+  
+  body.light-theme .custom-list-item:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .custom-link {
+    color: inherit;
+    text-decoration: none;
+    display: block;
   }
   

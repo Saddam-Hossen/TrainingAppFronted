@@ -151,15 +151,15 @@ const QuizNotice = () => {
 
         {/* Notice Table */}
         <div className="table-container mt-4">
-          <Table striped bordered hover responsive="sm" className="custom-table">
-            <thead className="table-light">
+          <Table striped bordered hover responsive="sm" >
+            <thead >
               <tr>
-                <th className="table-dark-cell">#</th>
-                <th className="table-dark-cell">Notification Name</th>
-                <th className="table-dark-cell">Notification DateTime</th>
-                <th className="table-dark-cell">Notification Text</th>
-                <th className="table-dark-cell">Status</th>
-                <th className="table-dark-cell">Action</th>
+                <th >#</th>
+                <th >Notification Name</th>
+                <th >Notification DateTime</th>
+                <th >Notification Text</th>
+                <th >Status</th>
+                <th >Action</th>
               </tr>
             </thead>
             <tbody>
@@ -170,9 +170,9 @@ const QuizNotice = () => {
 
                 return (
                   <tr key={notice.id || index}>
-                    <td className="table-dark-cell">{index + 1}</td>
-                    <td className="table-dark-cell">{notice.name}</td>
-                    <td className="table-dark-cell">{new Date(notice.datetime).toLocaleString()}</td>
+                    <td >{index + 1}</td>
+                    <td >{notice.name}</td>
+                    <td >{new Date(notice.datetime).toLocaleString()}</td>
                     <td className="text-start" style={{ whiteSpace: 'pre-wrap' }}>
                       {visibleLines.map((line, idx) => (
                         <div key={idx}>{renderTextWithLinks(line)}</div>
@@ -202,7 +202,7 @@ const QuizNotice = () => {
                         </span>
                       )}
                     </td>
-                    <td className="table-dark-cell">
+                    <td >
                       {notice.status}
                       <Button
                         variant="link"
@@ -220,7 +220,7 @@ const QuizNotice = () => {
                         {notice.status === "Active" ? <FaToggleOn size={20} /> : <FaToggleOff size={20} />}
                       </Button>
                     </td>
-                    <td className="table-dark-cell">
+                    <td >
                       <Button
                         variant="outline-danger"
                         size="sm"

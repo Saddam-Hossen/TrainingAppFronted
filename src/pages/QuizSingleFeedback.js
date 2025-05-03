@@ -17,9 +17,7 @@ const QuizSingleFeedback = () => {
     const fetchNotices = async () => {
       try {
         const data = await getAllQuizFeedbackSingle();
-        console.log("Fetched feedback data:", data); // Debugging line
         data.sort((a, b) => new Date(b.dateTime) - new Date(a.dateTime));
-        console.log("Fetched feedback data:", data); // Debugging line
 
         setNotices(data);
       } catch (err) {

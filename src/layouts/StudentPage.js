@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { Button, Offcanvas, Container, Row, Col, Card } from "react-bootstrap";
+import React, { useState, useEffect,useContext } from "react";
+import { Button, Offcanvas } from "react-bootstrap";
 import { FaBars } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { ThemeContext } from "../context/ThemeContext"; // Import ThemeContext
 const option = {
   scroll: true,
   backdrop: true,
@@ -8,31 +10,21 @@ const option = {
 
 const OffCanvasExample = ({ name, ...props }) => {
   const [show, setShow] = useState(false);
-
+  const { theme, toggleTheme } = useContext(ThemeContext);
   const handleClose = () => setShow(false);
   const toggleShow = () => setShow((s) => !s);
 
   return (
     <>
-      {/* Inline style for the custom list hover effect */}
-      <style>{`
-        .custom-list-item {
-          background-color: transparent;
-          color: #ececf1;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-        }
-        .custom-list-item:hover {
-          background-color: #565869;
-        }
-      `}</style>
+      {/* Custom styles */}
+     
 
-      {/* Toggle icon at top-left */}
+      {/* Sidebar toggle icon */}
       <Button
         variant="outline-light"
         onClick={toggleShow}
         style={{
-            position: "fixed",  // ✅ Now fixed, so it stays visible on scroll
+          position: "fixed",
           top: "20px",
           left: "20px",
           zIndex: 1051,
@@ -40,21 +32,21 @@ const OffCanvasExample = ({ name, ...props }) => {
           background: "none",
         }}
       >
-        <FaBars size={20} color="#ececf1" />
+        <FaBars size={20} color={theme === "dark" ? "#ececf1" : "#000"} />
       </Button>
 
+      {/* Sidebar */}
       <Offcanvas
         show={show}
         onHide={handleClose}
         {...props}
-        style={{ backgroundColor: "#343541", color: "#ececf1",
-
-        width: "250px", // Set a fixed width for the Offcanvas
-         }}
+        style={{
+          backgroundColor: theme === "dark" ? "#343541" : "#f9f9f9",
+          color: theme === "dark" ? "#ececf1" : "#000",
+          width: "250px",
+        }}
       >
-        {/* Removed Offcanvas.Header to hide the X icon */}
         <Offcanvas.Body className="d-flex flex-column align-items-center text-center">
-          {/* Profile Image */}
           <img
             src="/sn.jpg"
             alt="User"
@@ -63,38 +55,43 @@ const OffCanvasExample = ({ name, ...props }) => {
               width: "60px",
               height: "60px",
               objectFit: "cover",
-              border: "2px solid #ececf1",
+              border: `2px solid ${theme === "dark" ? "#ececf1" : "#000"}`,
             }}
           />
 
-          {/* User ID */}
-          <h5 className="mb-4" style={{ color: "#ececf1" }}>
-            User ID: {localStorage.getItem("userId")}
-          </h5>
+          <h5 className="mb-4">User ID: {localStorage.getItem("userId")}</h5>
 
-            {/* Clickable List with Links */}
-            <ul className="list-unstyled w-100 px-3">
+          {/* Clickable List with Links */}
+          <ul className="list-unstyled w-100 px-3">
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
-                <a href="/QuizSingleNotice" className="text-decoration-none text-reset d-block">Notice</a>
+              <Link to="/QuizSingleNotice" className="text-decoration-none text-reset d-block">Notice</Link>
             </li>
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
-                <a href="/QuizSingleAttendance" className="text-decoration-none text-reset d-block">Attendance</a>
+              <Link to="/QuizSingleAttendance" className="text-decoration-none text-reset d-block">Attendance</Link>
             </li>
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
-                <a href="/QuizSingleFeedback" className="text-decoration-none text-reset d-block">Feedback</a>
+              <Link to="/QuizSingleFeedback" className="text-decoration-none text-reset d-block">Feedback</Link>
             </li>
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
-                <a href="/QuizSingleResult" className="text-decoration-none text-reset d-block">Quiz Result</a>
+              <Link to="/QuizSingleResult" className="text-decoration-none text-reset d-block">Quiz Result</Link>
             </li>
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
-                <a href="/QuizSinglelink" className="text-decoration-none text-reset d-block">Class Link</a>
+              <Link to="/QuizSingleLink" className="text-decoration-none text-reset d-block">Class Link</Link>
+            </li>
+
+             {/* Theme Toggle */}
+             <li
+              className="custom-list-item text-start py-2 px-3 mb-2 rounded"
+              onClick={toggleTheme} // Trigger the toggleTheme function on click
+            >
+              <span className="d-block">
+                {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"} {/* Display text based on current theme */}
+              </span>
             </li>
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
                 <a href="/" className="text-decoration-none text-reset d-block">Logout</a>
             </li>
             </ul>
-
-
         </Offcanvas.Body>
       </Offcanvas>
     </>
@@ -102,20 +99,7 @@ const OffCanvasExample = ({ name, ...props }) => {
 };
 
 const OffcanvasPage = () => {
-  useEffect(() => {
-    document.body.style.backgroundColor = "#343541";
-    document.body.style.color = "#ececf1";
-    return () => {
-      document.body.style.backgroundColor = null;
-      document.body.style.color = null;
-    };
-  }, []);
-
-  return (
-    <>
-      <OffCanvasExample {...option} />
-    </>
-  );
+  return <OffCanvasExample {...option} />;
 };
 
 export default OffcanvasPage;

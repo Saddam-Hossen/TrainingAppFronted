@@ -33,12 +33,14 @@ import QuizSingleAttendance from "../pages/QuizSingleAttendance";
 import QuizSingleFeedback from "../pages/QuizSingleFeedback";
 import TestPage from "../pages/TestPage";
 import QuizAttendance from "../pages/QuizAttendance";
+import { ThemeProvider } from "../context/ThemeContext"; // Import ThemeProvider
 function App() {
   return (
   
     <Router>
+     <ThemeProvider> {/* Wrap the app with ThemeProvider */}
         <RoleProvider> 
-      <Routes>
+        <Routes>
         {/* Public Route */}
         <Route path="/" element={<Login />} />
 
@@ -76,6 +78,7 @@ function App() {
 
       </Routes>
       </RoleProvider>
+      </ThemeProvider>
     </Router>
     
   );
