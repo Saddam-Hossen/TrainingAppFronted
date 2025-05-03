@@ -25,11 +25,11 @@ const QuizSinglelink = () => {
       <Container className="mt-0 pt-5">
         <Card className="shadow-sm p-3 p-md-4">
           <h4 className="mb-4 text-primary text-center text-md-start">
-            🔗 Class Links Dashboard
+            🔗 Class Video Links Dashboard
           </h4>
 
           {quizlinks.length === 0 ? (
-            <p className="text-muted text-center">No class links added yet.</p>
+            <p className="text-muted text-center">No class Video links added yet.</p>
           ) : (
             <div className="table-container">
             <Table
@@ -44,7 +44,7 @@ const QuizSinglelink = () => {
                     <th>#</th>
                     <th>Class Name</th>
                     <th>Class Number</th>
-                    <th>Link</th>
+                    <th>Class Video Link</th>
                   </tr>
                 </thead>
                 <tbody>

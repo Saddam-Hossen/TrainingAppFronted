@@ -69,12 +69,12 @@ const Quizlink = () => {
         <>
             <AdminPage />
             <div className="container mt-0" style={{ paddingTop: "30px" }}>
-                <Button variant="primary" onClick={handleShow} style={{ marginBottom: "20px" }}>Add Class Link</Button>
+                <Button variant="primary" onClick={handleShow} style={{ marginBottom: "20px" }}>Add Class Video Link</Button>
 
                 {/* Modal */}
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
-                        <Modal.Title> Class link Information</Modal.Title>
+                        <Modal.Title> Class Video link Information</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form>
@@ -137,7 +137,7 @@ const Quizlink = () => {
                         <tr>
                             <th>Class Name</th>
                             <th>Class Number</th>
-                            <th>Link</th>
+                            <th>Class Video Link</th>
                             <th>Action</th>
                         </tr>
                     </thead>
