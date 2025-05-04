@@ -152,6 +152,7 @@ const QuizAttendance = () => {
               <Table striped bordered hover responsive="sm" className="custom-table">
                 <thead className="table-light">
                   <tr>
+                    <th> #</th>
                     <th> Class joining Date & Time</th>
                     <th>Class Name</th>
                     <th>Class Number</th>
@@ -167,6 +168,7 @@ const QuizAttendance = () => {
                     .filter(att => selectedClassName === 'All' || att.className === selectedClassName)
                     .map((att, index) => (
                       <tr key={index}>
+                        <td>{index + 1}</td>
                         <td>{new Date(att.datetime).toLocaleString()}</td>
                         <td>{att.className || '-'}</td>
                         <td>{att.classNumber || '-'}</td>

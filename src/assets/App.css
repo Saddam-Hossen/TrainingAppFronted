@@ -108,15 +108,25 @@ body.dark-theme ::placeholder {
     opacity: 1 !important;
   }
 
-  .goog-te-banner-frame.skiptranslate,
-.goog-te-gadget-simple {
-  background-color: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-body {
-  top: 0 !important;
-}
-
+ /* Google Translate Widget Customization */ 
+  /* Optional: Hide the small Google branding if needed */
+  .goog-logo-link,
+  .goog-te-gadget span {
+    display: none !important;
+  }
+  
+  /* Dropdown appearance (leave this visible) */
+  .goog-te-gadget-simple {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    align-items: flex-start !important;
+  }
+ 
+  .VIpgJd-ZVi9od-ORHb-OEVmcd{
+    display: none !important; /* Hide the Google Translate top banner */
+  }
+  
+  
+  
   

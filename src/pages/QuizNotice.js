@@ -69,7 +69,9 @@ const QuizNotice = () => {
   };
 
   const toggleExpanded = (index) => {
+   
     setExpandedStates(prev => ({ ...prev, [index]: !prev[index] }));
+    
   };
 
   useEffect(() => {
@@ -178,28 +180,27 @@ const QuizNotice = () => {
                         <div key={idx}>{renderTextWithLinks(line)}</div>
                       ))}
                       {lines.length > 2 && (
-                        <span
-                          onClick={() => toggleExpanded(index)}
-                          style={{
-                            color: '#007bff',
-                            textDecoration: 'underline',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            marginTop: '4px',
-                            fontWeight: '500'
-                          }}
-                        >
-                          {isExpanded ? (
-                            <>
-                              <BsChevronUp className="me-1" /> Read Less
-                            </>
-                          ) : (
-                            <>
-                              <BsChevronDown className="me-1" /> Read More
-                            </>
-                          )}
-                        </span>
+                       <span
+                       onClick={() => toggleExpanded(index)}
+                       style={{
+                         color: '#007bff',
+                         textDecoration: 'underline',
+                         cursor: 'pointer',
+                         display: 'inline-flex',
+                         alignItems: 'center',
+                         gap: '5px',
+                         marginTop: '4px',
+                         fontWeight: '500'
+                       }}
+                     >
+                       <span className="icon-wrapper">
+                         {isExpanded ? <BsChevronUp /> : <BsChevronDown />}
+                       </span>
+                       <span className="translate-text">
+                         {isExpanded ? 'Read Less' : 'Read More'}
+                       </span>
+                     </span>
+                     
                       )}
                     </td>
                     <td >
