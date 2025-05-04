@@ -25,7 +25,7 @@ const App = () => {
         new window.google.translate.TranslateElement(
           {
             pageLanguage: "en",
-            includedLanguages: "en,bn,hi,ar,de,zh-CN,ur,fa", // ✅ Added Urdu (ur) and Farsi (fa)
+             includedLanguages: "en,bn,hi,ar,de,zh-CN,ur,fa,ja", // ✅ Added Urdu (ur) and Farsi (fa)
 
             layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
             autoDisplay: false, // ✅ This disables the top bar
