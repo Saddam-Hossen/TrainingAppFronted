@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Card, Table, Button, Modal, Form } from 'react-bootstrap';
+import { Container, Card, Table, Button, Modal, Form ,Row,Col} from 'react-bootstrap';
 import { BsClipboardCheck } from 'react-icons/bs';
 import { BiEdit } from 'react-icons/bi';
 import { MdDelete } from 'react-icons/md';
@@ -215,87 +215,168 @@ const QuizAttendance = () => {
       </Container>
 
       <Modal show={showModal} onHide={() => {
-        setShowModal(false);
-        setEditMode(false);
-      }}>
-        <Modal.Header closeButton>
-          <Modal.Title>{editMode ? 'Edit Information' : 'Add Information'}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-           
+  setShowModal(false);
+  setEditMode(false);
+}}>
+  <Modal.Header closeButton>
+    <Modal.Title>{editMode ? 'Edit Information' : 'Add Information'}</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    <Form>
+      <Row className="mb-3">
+        <Col md={6}>
+          <Form.Group>
+            <Form.Label>Upazila</Form.Label>
+            <Form.Control
+              type="text"
+              value={modalData.upazila}
+              onChange={(e) => setModalData({ ...modalData, upazila: e.target.value })}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6}>
+          <Form.Group>
+            <Form.Label>Union</Form.Label>
+            <Form.Control
+              type="text"
+              value={modalData.union}
+              onChange={(e) => setModalData({ ...modalData, union: e.target.value })}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Upazila</Form.Label>
-              <Form.Control type="text" value={modalData.upazila} onChange={(e) => setModalData({ ...modalData, upazila: e.target.value })} />
-            </Form.Group>
+      <Row className="mb-3">
+        <Col md={6}>
+          <Form.Group>
+            <Form.Label>Voting Center</Form.Label>
+            <Form.Control
+              type="text"
+              value={modalData.voting_center}
+              onChange={(e) => setModalData({ ...modalData, voting_center: e.target.value })}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6}>
+          <Form.Group>
+            <Form.Label>Village</Form.Label>
+            <Form.Control
+              type="text"
+              value={modalData.village}
+              onChange={(e) => setModalData({ ...modalData, village: e.target.value })}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Union</Form.Label>
-              <Form.Control type="text" value={modalData.union} onChange={(e) => setModalData({ ...modalData, union: e.target.value })} />
-            </Form.Group>
+      <hr />
 
-            <Form.Group className="mb-3">
-              <Form.Label>Voting Center</Form.Label>
-              <Form.Control type="text" value={modalData.voting_center} onChange={(e) => setModalData({ ...modalData, voting_center: e.target.value })} />
-            </Form.Group>
+      <Row className="mb-3">
+        <Col md={6}>
+          <Form.Group>
+            <Form.Label>Name</Form.Label>
+            <Form.Control
+              type="text"
+              value={modalData.name}
+              onChange={(e) => setModalData({ ...modalData, name: e.target.value })}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6}>
+          <Form.Group>
+            <Form.Label>Father's Name</Form.Label>
+            <Form.Control
+              type="text"
+              value={modalData.father_name}
+              onChange={(e) => setModalData({ ...modalData, father_name: e.target.value })}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Village</Form.Label>
-              <Form.Control type="text" value={modalData.village} onChange={(e) => setModalData({ ...modalData, village: e.target.value })} />
-            </Form.Group>
+      <Row className="mb-3">
+        <Col>
+          <Form.Group>
+            <Form.Label>Category</Form.Label>
+            <Form.Select
+              value={modalData.categoryName}
+              onChange={(e) => setModalData({ ...modalData, categoryName: e.target.value })}
+            >
+              <option value="">Select Category</option>
+              {totalCategory.map((cat, idx) => (
+                <option key={idx} value={cat.categoryName}>{cat.categoryName}</option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+        </Col>
+      </Row>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Name</Form.Label>
-              <Form.Control type="text" value={modalData.name} onChange={(e) => setModalData({ ...modalData, name: e.target.value })} />
-            </Form.Group>
+      <hr />
 
-            <Form.Group className="mb-3">
-              <Form.Label>Father's Name</Form.Label>
-              <Form.Control type="text" value={modalData.father_name} onChange={(e) => setModalData({ ...modalData, father_name: e.target.value })} />
-            </Form.Group>
+      <Row className="mb-3">
+        <Col md={6}>
+          <Form.Group>
+            <Form.Label>Organizational Responsibility</Form.Label>
+            <Form.Control
+              type="text"
+              value={modalData.organizational_responsibility}
+              onChange={(e) => setModalData({ ...modalData, organizational_responsibility: e.target.value })}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6}>
+          <Form.Group>
+            <Form.Label>Organizational Level</Form.Label>
+            <Form.Control
+              type="text"
+              value={modalData.organizational_level}
+              onChange={(e) => setModalData({ ...modalData, organizational_level: e.target.value })}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Category</Form.Label>
-              <Form.Select
-                value={modalData.categoryName}
-                onChange={(e) => setModalData({ ...modalData, categoryName: e.target.value })}
-              >
-                <option value="">Select Category</option>
-                {totalCategory.map((cat, idx) => (
-                  <option key={idx} value={cat.categoryName}>{cat.categoryName}</option>
-                ))}
-              </Form.Select>
-            </Form.Group>
+      <Row className="mb-3">
+        <Col>
+          <Form.Group>
+            <Form.Label>Mobile Number</Form.Label>
+            <Form.Control
+              type="text"
+              value={modalData.mobile_number}
+              onChange={(e) => setModalData({ ...modalData, mobile_number: e.target.value })}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
 
+      <Row className="mb-3">
+        <Col>
+          <Form.Group>
+            <Form.Label>Comments</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={2}
+              value={modalData.comments}
+              onChange={(e) => setModalData({ ...modalData, comments: e.target.value })}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+    </Form>
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" onClick={() => {
+      setShowModal(false);
+      setEditMode(false);
+    }}>
+      Cancel
+    </Button>
+    <Button variant="primary" onClick={handlePresent}>
+      {editMode ? 'Update' : 'Save'}
+    </Button>
+  </Modal.Footer>
+</Modal>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Organizational Responsibility</Form.Label>
-              <Form.Control type="text" value={modalData.organizational_responsibility} onChange={(e) => setModalData({ ...modalData, organizational_responsibility: e.target.value })} />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Organizational Level</Form.Label>
-              <Form.Control type="text" value={modalData.organizational_level} onChange={(e) => setModalData({ ...modalData, organizational_level: e.target.value })} />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Mobile Number</Form.Label>
-              <Form.Control type="text" value={modalData.mobile_number} onChange={(e) => setModalData({ ...modalData, mobile_number: e.target.value })} />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Comments</Form.Label>
-              <Form.Control type="text" value={modalData.comments} onChange={(e) => setModalData({ ...modalData, comments: e.target.value })} />
-            </Form.Group>
-
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>Close</Button>
-          <Button variant="primary" onClick={handlePresent}>Save</Button>
-        </Modal.Footer>
-      </Modal>
     </>
   );
 };

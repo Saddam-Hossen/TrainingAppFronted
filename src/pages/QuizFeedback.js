@@ -88,7 +88,7 @@ const QuizSingleFeedback = () => {
                   <tr>
                     <th style={{ width: '5%' }}>#</th>
                     <th style={{ width: '15%' }}>ID No.</th>
-                    <th style={{ width: '15%' }}>Date & Time</th>
+                 
                     <th style={{ width: '15%' }}>Class Name</th>
                     <th style={{ width: '10%' }}>Class No.</th>
                     <th style={{ width: '15%' }}>Trainer</th>
@@ -104,7 +104,7 @@ const QuizSingleFeedback = () => {
                       <tr key={notice.id || index}>
                         <td>{index + 1}</td>
                         <td>{notice.idNumber}</td>
-                        <td>{new Date(notice.dateTime).toLocaleString()}</td>
+                      
                         <td>{notice.className}</td>
                         <td>{notice.classNumber}</td>
                         <td>{notice.trainerName}</td>
