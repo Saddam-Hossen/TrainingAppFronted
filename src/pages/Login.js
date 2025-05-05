@@ -33,7 +33,11 @@ const Login = () => {
 
         if (response?.role === "Admin") {
           navigate("/QuizNotice");
-        } else {
+        } else if (response?.role === "pabna") {
+          //alert("You are allowed to login as a student.");
+          navigate("/Pabna");
+        } 
+        else {
           navigate("/QuizSingleNotice");
         }
       } else {

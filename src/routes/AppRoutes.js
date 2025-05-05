@@ -34,7 +34,7 @@ import QuizSingleFeedback from "../pages/QuizSingleFeedback";
 import TestPage from "../pages/TestPage";
 import QuizAttendance from "../pages/QuizAttendance";
 import { ThemeProvider } from "../context/ThemeContext"; // Import ThemeProvider
-
+import Pabna from "../pages/Pabna";
 function App() {
   return (
   
@@ -76,6 +76,8 @@ function App() {
         <Route path="/QuizSingleFeedback" element={<ProtectedRoute><QuizSingleFeedback /></ProtectedRoute>} />
         <Route path="/TestPage" element={<ProtectedRoute><TestPage /></ProtectedRoute>} />
         <Route path="/QuizAttendance" element={<ProtectedRoute><QuizAttendance /></ProtectedRoute>} />
+        <Route path="/Pabna" element={<ProtectedRoute><Pabna /></ProtectedRoute>} />
+
 
       </Routes>
       </RoleProvider>
