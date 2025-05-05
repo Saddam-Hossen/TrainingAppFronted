@@ -4,7 +4,7 @@ import { BsChatLeftTextFill } from 'react-icons/bs';
 import SingleNavbar from "../layouts/SingleNavbar";
 import { getAllQuizFeedback, saveQuizFeedback } from '../services/QuizSingleFeedbackService';
 import moment from 'moment';
-import StudentPage from '../layouts/StudentPage';
+import AdminPage from '../layouts/AdminPage';
 import '../assets/App.css'; // Adjust the path if needed
 
 const QuizSingleFeedback = () => {
