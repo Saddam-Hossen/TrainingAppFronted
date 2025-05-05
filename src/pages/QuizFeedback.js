@@ -65,7 +65,7 @@ const QuizSingleFeedback = () => {
 
   return (
     <>
-      <StudentPage />
+      <AdminPage />
       <Container className="mt-0 pt-5">
         <Card className="shadow-sm p-3 p-md-4">
           <h4 className="mb-4 d-flex align-items-center text-primary fs-5 fs-md-4">
