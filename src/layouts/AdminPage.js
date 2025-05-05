@@ -72,6 +72,9 @@ const OffCanvasExample = ({ name, ...props }) => {
               <Link to="/QuizResult" className="custom-link">Quiz Result</Link>
             </li>
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
+              <Link to="/QuizFeedback" className="custom-link">Class Feedback</Link>
+            </li>
+            <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
               <Link to="/QuizLink" className="custom-link">Class Link</Link>
             </li>
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">

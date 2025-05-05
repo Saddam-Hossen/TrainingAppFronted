@@ -4,7 +4,7 @@ import { BsClipboardCheck } from 'react-icons/bs';
 import { BiEdit } from 'react-icons/bi';
 import { MdDelete } from 'react-icons/md';
 import Navbar from "../layouts/SingleNavbar";
-import { getAllAttendance, saveAttendanceFromAdmin, deleteAttendance, updateAttendance } from '../services/QuizSingleAttendanceService';
+import { getAllDropdownData,getAllCategory, saveAttendanceFromAdmin, deleteAttendance, updateAttendance } from '../services/PabnaService';
 import moment from 'moment-timezone';
 import AdminPage from '../layouts/AdminPage';
 import '../assets/App.css';
@@ -12,7 +12,7 @@ import { getAllQuizNotices, getAllEmployees } from '../services/QuizClassesServi
 
 const QuizAttendance = () => {
   const [students, setStudents] = useState([]);
-  const [totalClasses, setTotalClasses] = useState([]);
+  const [totalCategory, setTotalCategory] = useState([]);
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -24,7 +24,7 @@ const QuizAttendance = () => {
     village: '',
     name: '',
     father_name: '',
-    category: '',
+    categoryName: '',
     organizational_responsibility: '',
     organizational_level: '',
     mobile_number: '',
@@ -36,20 +36,15 @@ const QuizAttendance = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setClasses(await getAllAttendance());
-        setTotalClasses(await getAllQuizNotices());
-        setStudents(await getAllEmployees());
+        setClasses(await getAllDropdownData());
+        setTotalCategory(await getAllCategory());
+       
       } catch (err) {
         console.error("Failed to fetch data:", err);
       }
     };
     fetchData();
 
-    const interval = setInterval(() => {
-      setClasses(prev => [...prev]);
-    }, 60000);
-
-    return () => clearInterval(interval);
   }, []);
 
   const handlePresent = async () => {
@@ -76,7 +71,7 @@ const QuizAttendance = () => {
         village: '',
         name: '',
         father_name: '',
-        category: '',
+        categoryName: '',
         organizational_responsibility: '',
         organizational_level: '',
         mobile_number: '',
@@ -99,7 +94,7 @@ const QuizAttendance = () => {
       village: entry.village || '',
       name: entry.name || '',
       father_name: entry.father_name || '',
-      category: entry.category || '',
+      categoryName: entry.categoryName || '',
       organizational_responsibility: entry.organizational_responsibility || '',
       organizational_level: entry.organizational_level || '',
       mobile_number: entry.mobile_number || '',
@@ -119,7 +114,7 @@ const QuizAttendance = () => {
     }
   };
 
-  const classNameOptions = ['All', ...Array.from(new Set(classes.map(cls => cls.className).filter(Boolean)))];
+  const classNameOptions = ['All', ...Array.from(new Set(classes.map(cls => cls.idNumber).filter(Boolean)))];
 
 
   return (
@@ -143,6 +138,7 @@ const QuizAttendance = () => {
             </Form.Select>
 
             <Button variant="primary" onClick={() => {
+              console.log(classes)
               setShowModal(true);
               setEditMode(false);
               setModalData({
@@ -153,7 +149,7 @@ const QuizAttendance = () => {
                 village: '',
                 name: '',
                 father_name: '',
-                category: '',
+                categoryName: '',
                 organizational_responsibility: '',
                 organizational_level: '',
                 mobile_number: '',
@@ -200,7 +196,7 @@ const QuizAttendance = () => {
                         <td>{att.village || '-'}</td>
                         <td>{att.name || '-'}</td>
                         <td>{att.father_name || '-'}</td>
-                        <td>{att.category || '-'}</td>
+                        <td>{att.categoryName || '-'}</td>
                         <td>{att.organizational_responsibility || '-'}</td>
                         <td>{att.organizational_level || '-'}</td>
                         <td>{att.mobile_number || '-'}</td>
@@ -261,8 +257,17 @@ const QuizAttendance = () => {
 
             <Form.Group className="mb-3">
               <Form.Label>Category</Form.Label>
-              <Form.Control type="text" value={modalData.category} onChange={(e) => setModalData({ ...modalData, category: e.target.value })} />
+              <Form.Select
+                value={modalData.categoryName}
+                onChange={(e) => setModalData({ ...modalData, categoryName: e.target.value })}
+              >
+                <option value="">Select Category</option>
+                {totalCategory.map((cat, idx) => (
+                  <option key={idx} value={cat.categoryName}>{cat.categoryName}</option>
+                ))}
+              </Form.Select>
             </Form.Group>
+
 
             <Form.Group className="mb-3">
               <Form.Label>Organizational Responsibility</Form.Label>
