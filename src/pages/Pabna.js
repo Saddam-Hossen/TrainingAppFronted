@@ -4,7 +4,7 @@ import { BsClipboardCheck } from 'react-icons/bs';
 import { BiEdit } from 'react-icons/bi';
 import { MdDelete } from 'react-icons/md';
 import Navbar from "../layouts/SingleNavbar";
-import { getAllDropdownData,getAllCategory, saveAttendanceFromAdmin, deleteAttendance, updateAttendance } from '../services/PabnaService';
+import { getAllDropdownData,getAllCategory,getAllPabnaInformation, saveAttendanceFromAdmin, deleteAttendance, updateAttendance } from '../services/PabnaService';
 import moment from 'moment-timezone';
 import AdminPage from '../layouts/AdminPage';
 import '../assets/App.css';
@@ -12,6 +12,7 @@ import { getAllQuizNotices, getAllEmployees } from '../services/QuizClassesServi
 
 const QuizAttendance = () => {
   const [students, setStudents] = useState([]);
+  const[pabnaInformation, setPabnaInformation] = useState([]);
   const [totalCategory, setTotalCategory] = useState([]);
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
@@ -38,6 +39,7 @@ const QuizAttendance = () => {
       try {
         setClasses(await getAllDropdownData());
         setTotalCategory(await getAllCategory());
+        setPabnaInformation(await getAllPabnaInformation());
        
       } catch (err) {
         console.error("Failed to fetch data:", err);
@@ -85,12 +87,18 @@ const QuizAttendance = () => {
   };
 
   const handleEdit = (entry) => {
+    const selectedUpazila = classes.find(c => c.name === entry.upazila && c.level === 'upazila');
+    const selectedUnion = classes.find(c => c.name === entry.union && c.level === 'union');
+    const selectedCenter = classes.find(c => c.name === entry.voting_center && c.level === 'center');
+  
     setSelectedClass(entry);
     setModalData({
-     
       upazila: entry.upazila || '',
+      upazilaIdNumber: selectedUpazila?.idNumber || '',
       union: entry.union || '',
+      unionIdNumber: selectedUnion?.idNumber || '',
       voting_center: entry.voting_center || '',
+      votingCenterIdNumber: selectedCenter?.idNumber || '',
       village: entry.village || '',
       name: entry.name || '',
       father_name: entry.father_name || '',
@@ -100,9 +108,11 @@ const QuizAttendance = () => {
       mobile_number: entry.mobile_number || '',
       comments: entry.comments || ''
     });
+  
     setEditMode(true);
     setShowModal(true);
   };
+  
 
   const handleDelete = async (row) => {
     try {
@@ -114,7 +124,7 @@ const QuizAttendance = () => {
     }
   };
 
-  const classNameOptions = ['All', ...Array.from(new Set(classes.map(cls => cls.idNumber).filter(Boolean)))];
+  const classNameOptions = ['All', ...Array.from(new Set(pabnaInformation.map(cls => cls.upazila).filter(Boolean)))];
 
 
   return (
@@ -163,8 +173,8 @@ const QuizAttendance = () => {
           {classes.length === 0 ? (
             <p className="text-muted text-center">No records yet.</p>
           ) : (
-            <div className="table-container">
-              <Table striped bordered hover responsive="sm" className="custom-table">
+            <div style={{ overflowX: 'auto', width: '100%' }}>
+                    <Table striped bordered hover responsive="sm">
                 <thead className="table-light">
                   <tr>
                     <th> #</th>
@@ -184,8 +194,8 @@ const QuizAttendance = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {classes
-                    .filter(att => selectedClassName === 'All' || att.className === selectedClassName)
+                  {pabnaInformation
+                    .filter(att => selectedClassName === 'All' || att.upazila === selectedClassName)
                     .map((att, index) => (
                       <tr key={index}>
                         <td>{index + 1}</td>
@@ -223,25 +233,73 @@ const QuizAttendance = () => {
   </Modal.Header>
   <Modal.Body>
     <Form>
-      <Row className="mb-3">
-        <Col md={6}>
-          <Form.Group>
-            <Form.Label>Upazila</Form.Label>
-            <Form.Control
-              type="text"
+    <Row className="mb-3">
+  <Col md={6}>
+    <Form.Group>
+      <Form.Label>Upazila</Form.Label>
+      <Form.Control
+              as="select"
               value={modalData.upazila}
-              onChange={(e) => setModalData({ ...modalData, upazila: e.target.value })}
-            />
+              onChange={(e) => {
+                const selectedOption = e.target.options[e.target.selectedIndex];
+                const upazilaId = selectedOption.getAttribute('data-upazila-id');
+                const upazilaName = selectedOption.value;
+
+                setModalData({
+                  ...modalData,
+                  upazila: upazilaName,
+                  upazilaIdNumber: upazilaId,
+                  union: '',
+                  unionIdNumber: '',
+                  voting_center: '',
+                  votingCenterIdNumber: '',
+                  village: ''
+                });
+              }}
+            >
+              <option value="">Select Upazila</option>
+              {classes
+                .filter(item => item.level === 'upazila')
+                .map(item => (
+                  <option key={item.id} value={item.name} data-upazila-id={item.idNumber}>
+                    {item.name}
+                  </option>
+                ))}
+            </Form.Control>
           </Form.Group>
         </Col>
+
         <Col md={6}>
           <Form.Group>
             <Form.Label>Union</Form.Label>
             <Form.Control
-              type="text"
+              as="select"
               value={modalData.union}
-              onChange={(e) => setModalData({ ...modalData, union: e.target.value })}
-            />
+              onChange={(e) => {
+                const selectedOption = e.target.options[e.target.selectedIndex];
+                const unionId = selectedOption.getAttribute('data-union-id');
+                const unionName = selectedOption.value;
+
+                setModalData({
+                  ...modalData,
+                  union: unionName,
+                  unionIdNumber: unionId,
+                  voting_center: '',
+                  votingCenterIdNumber: '',
+                  village: ''
+                });
+              }}
+              
+            >
+              <option value="">Select Union</option>
+              {classes
+                .filter(item => item.level === 'union' && item.parent_idNumber === modalData.upazilaIdNumber)
+                .map(item => (
+                  <option key={item.id} value={item.name} data-union-id={item.idNumber}>
+                    {item.name}
+                  </option>
+                ))}
+            </Form.Control>
           </Form.Group>
         </Col>
       </Row>
@@ -251,20 +309,52 @@ const QuizAttendance = () => {
           <Form.Group>
             <Form.Label>Voting Center</Form.Label>
             <Form.Control
-              type="text"
+              as="select"
               value={modalData.voting_center}
-              onChange={(e) => setModalData({ ...modalData, voting_center: e.target.value })}
-            />
+              onChange={(e) => {
+                const selectedOption = e.target.options[e.target.selectedIndex];
+                const centerId = selectedOption.getAttribute('data-center-id');
+                const centerName = selectedOption.value;
+
+                setModalData({
+                  ...modalData,
+                  voting_center: centerName,
+                  votingCenterIdNumber: centerId,
+                  village: ''
+                });
+              }}
+             
+            >
+              <option value="">Select Voting Center</option>
+              {classes
+                .filter(item => item.level === 'center' && item.parent_idNumber === modalData.unionIdNumber)
+                .map(item => (
+                  <option key={item.id} value={item.name} data-center-id={item.idNumber}>
+                    {item.name}
+                  </option>
+                ))}
+            </Form.Control>
           </Form.Group>
         </Col>
+
         <Col md={6}>
           <Form.Group>
             <Form.Label>Village</Form.Label>
             <Form.Control
-              type="text"
+              as="select"
               value={modalData.village}
               onChange={(e) => setModalData({ ...modalData, village: e.target.value })}
-            />
+             
+            >
+              <option value="">Select Village</option>
+              {classes
+                .filter(item => item.level === 'village' && item.parent_idNumber === modalData.votingCenterIdNumber)
+                .map(item => (
+                  <option key={item.id} value={item.name}>
+                    {item.name}
+                  </option>
+                ))}
+            </Form.Control>
           </Form.Group>
         </Col>
       </Row>
@@ -314,27 +404,43 @@ const QuizAttendance = () => {
       <hr />
 
       <Row className="mb-3">
-        <Col md={6}>
-          <Form.Group>
-            <Form.Label>Organizational Responsibility</Form.Label>
-            <Form.Control
-              type="text"
-              value={modalData.organizational_responsibility}
-              onChange={(e) => setModalData({ ...modalData, organizational_responsibility: e.target.value })}
-            />
-          </Form.Group>
-        </Col>
-        <Col md={6}>
-          <Form.Group>
-            <Form.Label>Organizational Level</Form.Label>
-            <Form.Control
-              type="text"
-              value={modalData.organizational_level}
-              onChange={(e) => setModalData({ ...modalData, organizational_level: e.target.value })}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Organizational Responsibility</Form.Label>
+              <Form.Control
+                as="select"
+                value={modalData.organizational_responsibility}
+                onChange={(e) => setModalData({ ...modalData, organizational_responsibility: e.target.value })}
+              >
+                <option value="">Select Responsibility</option>
+                <option value="President">President</option>
+                <option value="Vice President">Vice President</option>
+                <option value="General Secretary">General Secretary</option>
+                <option value="Treasurer">Treasurer</option>
+                <option value="Member">Member</option>
+              </Form.Control>
+            </Form.Group>
+          </Col>
+
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Organizational Level</Form.Label>
+              <Form.Control
+                as="select"
+                value={modalData.organizational_level}
+                onChange={(e) => setModalData({ ...modalData, organizational_level: e.target.value })}
+              >
+                <option value="">Select Level</option>
+                <option value="Central">Central</option>
+                <option value="District">District</option>
+                <option value="Upazila">Upazila</option>
+                <option value="Union">Union</option>
+                <option value="Ward">Ward</option>
+              </Form.Control>
+            </Form.Group>
+          </Col>
+        </Row>
+
 
       <Row className="mb-3">
         <Col>
