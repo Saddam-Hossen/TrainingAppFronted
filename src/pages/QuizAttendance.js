@@ -188,8 +188,8 @@ const QuizAttendance = () => {
           {classes.length === 0 ? (
             <p className="text-muted text-center">No attendance records yet.</p>
           ) : (
-            <div className="table-container">
-              <Table striped bordered hover responsive="sm" className="custom-table">
+              <div style={{ overflowX: 'auto', width: '100%' }}>
+                  <Table striped bordered hover responsive="sm" className="custom-table">
                 <thead className="table-light">
                   <tr>
                     <th> #</th>
