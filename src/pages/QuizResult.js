@@ -17,6 +17,7 @@ const QuizResult = () => {
     const [excelData, setExcelData] = useState([]);
     const [fileName, setFileName] = useState('');
     const [selectedClassName, setSelectedClassName] = useState('');
+    const [selectedClassNumber, setSelectedClassNumber] = useState('');
 
     const handleShow = () => setShow(true);
     const handleClose = () => {
@@ -53,7 +54,7 @@ const QuizResult = () => {
             const worksheet = workbook.Sheets[sheetName];
             const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
 
-            const requiredFields = ['className', 'classNumber', 'idNumber', 'totalMarks', 'obtainMarks', 'merit'];
+            const requiredFields = [ 'idNumber', 'totalMarks', 'obtainMarks', 'merit'];
             const errorDetails = [];
 
             jsonData.forEach((row, index) => {
@@ -80,7 +81,11 @@ const QuizResult = () => {
     const handleSaveAll = async () => {
         try {
             for (const record of excelData) {
-                console.log('Excel Data:', record);
+               // console.log('Excel Data:', record);
+               
+                record.className = selectedClassName;
+                record.classNumber = selectedClassNumber;
+                 //console.log('Excel Data modified:', record);
                 await saveClass(record);
             }
             const updatedClasses = await getAllClasses();
@@ -125,25 +130,35 @@ const QuizResult = () => {
             XLSX.writeFile(workbook, 'quiz_results.xlsx');
         };
         
+const filteredClassNumbers = totalClasses
+    .filter(cls => cls.className === selectedClassName)
+    .map(cls => cls.classNumber);
+
 
     return (
         <>
             <AdminPage />
             <div className="container mt-0" style={{ paddingTop: '30px' }}>
-                <div className="d-flex align-items-center gap-3 mb-3" style={{ width: '40%' }}>
-                    <Button variant="primary" onClick={handleShow}>Import</Button>
-                    <Form.Select
-                        value={selectedClassName}
-                        onChange={(e) => setSelectedClassName(e.target.value)}
-                        style={{ flex: 1 }}
-                    >
-                        <option value="">All Classes</option>
-                        {uniqueClassNames.map((name, idx) => (
-                            <option key={idx} value={name}>{name}</option>
-                        ))}
-                    </Form.Select>
-                    <Button variant="success" onClick={handleExport}>Export</Button>
+               <div
+                 className="globalDiv d-flex flex-column flex-md-row align-items-stretch gap-3 mb-3"
+                style={{ width: '100%' }}
+                >
+                <Button variant="primary" onClick={handleShow}>Import</Button>
+
+                <Form.Select
+                    value={selectedClassName}
+                    onChange={(e) => setSelectedClassName(e.target.value)}
+                    style={{ flex: 1 }}
+                >
+                    <option value="">All Classes</option>
+                    {uniqueClassNames.map((name, idx) => (
+                    <option key={idx} value={name}>{name}</option>
+                    ))}
+                </Form.Select>
+
+                <Button variant="success" onClick={handleExport}>Export</Button>
                 </div>
+
             
 
                 <Modal show={show} onHide={handleClose} size="lg">
@@ -151,6 +166,34 @@ const QuizResult = () => {
                         <Modal.Title>Upload Excel Result</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
+                       
+                        <Form.Group controlId="classNameSelect" className="mb-3">
+                            <Form.Label>Select Class Name</Form.Label>
+                            <Form.Select
+                                value={selectedClassName}
+                                onChange={(e) => setSelectedClassName(e.target.value)}
+                                style={{ flex: 1 }}
+                            >
+                                <option value="">Select Class Name</option>
+                                {uniqueClassNames.map((name, idx) => (
+                                    <option key={idx} value={name}>{name}</option>
+                                ))}
+                            </Form.Select>
+                        </Form.Group>
+                        <Form.Group controlId="classNumberSelect" className="mb-3">
+                          <Form.Label>Select Class Name</Form.Label>
+                          <Form.Select
+                            onChange={(e) => setSelectedClassNumber(e.target.value)}
+                            style={{ flex: 1 }} 
+                         >
+                            <option value="">Select Class Number</option>
+                            {filteredClassNumbers.map((number, idx) => (
+                                <option key={idx} value={number}>{number}</option>
+                            ))}
+                        </Form.Select>
+                        </Form.Group>
+
+
                         <Form.Group controlId="formFile" className="mb-3">
                             <Form.Label>Select Excel File</Form.Label>
                             <Form.Control type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
@@ -243,7 +286,7 @@ const QuizResult = () => {
                         return (
                             <>
                                 <p style={{ fontWeight: 'bold', color: 'red' }}>{firstLine}</p>
-                                <p style={{ fontWeight: 'bold' }}>Column Name should be sequentially: className, classNumber, idNumber, totalMarks, obtainMarks, merit.</p>
+                                <p style={{ fontWeight: 'bold' }}>Column Name should be: idNumber, totalMarks, obtainMarks, merit.</p>
                                 <p style={{ fontWeight: 'bold' }}>Please check the following:</p>
                                 <p style={{ fontWeight: 'bold' }}>Details:</p>
                                 <ol>

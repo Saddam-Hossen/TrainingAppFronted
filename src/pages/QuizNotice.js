@@ -90,8 +90,14 @@ const QuizNotice = () => {
   return (
     <>
       <AdminPage />
-      <div className="container" style={{ paddingTop: "20px", display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div className="container mt-0" style={{ paddingTop: "30px" }}>
+       
+       <div
+          className="globalDiv d-flex flex-column flex-md-row align-items-stretch gap-3 mb-3"
+          style={{ width: '100%' }}
+        >       
         <Button variant="primary" onClick={handleShow}>Add Notice</Button>
+        </div>
 
         {/* Modal for Adding Notice */}
         <Modal show={show} onHide={handleClose}>

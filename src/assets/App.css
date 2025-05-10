@@ -126,6 +126,12 @@ body.dark-theme ::placeholder {
   .VIpgJd-ZVi9od-ORHb-OEVmcd{
     display: none !important; /* Hide the Google Translate top banner */
   }
+
+@media (max-width: 768px) {
+    .globalDiv {
+        margin-top: 30px;
+    }
+}
   
   
   

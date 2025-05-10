@@ -69,8 +69,12 @@ const Quizlink = () => {
         <>
             <AdminPage />
             <div className="container mt-0" style={{ paddingTop: "30px" }}>
+             <div
+                className="globalDiv d-flex flex-column flex-md-row align-items-stretch gap-3 mb-3"
+                style={{ width: '100%' }}
+                >
                 <Button variant="primary" onClick={handleShow} style={{ marginBottom: "20px" }}>Add Class Video Link</Button>
-
+                </div>
                 {/* Modal */}
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>

@@ -23,7 +23,7 @@ const QuizSinglelink = () => {
     <>
       <StudentPage />
       <Container className="mt-0 pt-5">
-        <Card className="shadow-sm p-3 p-md-4">
+        <Card className=" globalDiv shadow-sm p-3 p-md-4">
           <h4 className="mb-4 text-primary text-center text-md-start">
             🔗 Class Video Links Dashboard
           </h4>

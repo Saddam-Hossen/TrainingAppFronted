@@ -62,7 +62,7 @@ const QuizNotice = () => {
     <>
       <StudentPage />
       <Container className="mt-0 pt-5">
-        <Card className="shadow-sm p-3 p-md-4">
+        <Card className=" globalDiv shadow-sm p-3 p-md-4">
           <h4 className="mb-4 d-flex align-items-center text-primary fs-5 fs-md-4">
             <BsBellFill className="me-2" size={20} />
             Notice Dashboard

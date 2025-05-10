@@ -136,16 +136,19 @@ const QuizAttendance = () => {
     <>
       <AdminPage />
       <Container className="mt-0 pt-5">
-        <Card className="shadow-sm p-3 p-md-4">
+        <Card className="shadow-sm p-3 p-md-4 globalDiv  ">
           <h4 className="mb-4 text-primary d-flex align-items-center justify-content-center justify-content-md-start">
             <BsClipboardCheck className="me-2" />
             Attendance Dashboard
           </h4>
 
-          <div className="d-flex flex-column flex-md-row justify-content-start align-items-start gap-2 mb-3">
+        <div
+            className="globalDiv d-flex flex-column flex-md-row align-items-stretch gap-3 mb-3"
+            style={{ width: '100%' }}
+          >
                 <Form.Select
                   value={selectedClassName}
-                  style={{ width: '100%', maxWidth: '300px' }}
+                  
                   onChange={(e) => setSelectedClassName(e.target.value)}
                 >
                   {classNameOptions.map((name, idx) => (
@@ -155,7 +158,7 @@ const QuizAttendance = () => {
 
                 <Button
                   variant="success"
-                  style={{ width: '60%', maxWidth: '200px' }}
+                 
                   onClick={handleExport}
                 >
                   Export
@@ -163,7 +166,7 @@ const QuizAttendance = () => {
 
                 <Button
                   variant="primary"
-                  style={{ width: '60%', maxWidth: '200px' }}
+               
                   onClick={() => {
                     setShowModal(true);
                     setEditMode(false);

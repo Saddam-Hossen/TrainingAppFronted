@@ -91,12 +91,15 @@ const QuizSingleFeedback = () => {
     <>
       <AdminPage />
       <Container className="mt-0 pt-5">
-        <Card className="shadow-sm p-3 p-md-4">
+        <Card className="globalDiv shadow-sm p-3 p-md-4 ">
           <h4 className="mb-4 d-flex align-items-center text-primary fs-5 fs-md-4">
             <BsChatLeftTextFill className="me-2" size={20} />
             Class Feedback
           </h4>
-          <div className="d-flex align-items-center gap-3 mb-3" style={{ width: '40%' }}>
+         <div
+          className="globalDiv d-flex flex-column flex-md-row align-items-stretch gap-3 mb-3"
+          style={{ width: '100%' }}
+        >
             <Form.Select
               value={selectedClassName}
               onChange={(e) => setSelectedClassName(e.target.value)}

@@ -98,7 +98,7 @@ const QuizSingleAttendance = () => {
     <>
       <StudentPage/>
       <Container className="mt-0 pt-5">
-        <Card className="shadow-sm p-3 p-md-4">
+        <Card className="globalDiv shadow-sm p-3 p-md-4">
           <h4 className="mb-4 text-primary d-flex align-items-center justify-content-center justify-content-md-start">
             <BsClipboardCheck className="me-2" />
             Attendance Dashboard
