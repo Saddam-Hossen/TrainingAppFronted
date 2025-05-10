@@ -19,7 +19,7 @@ import moment from 'moment-timezone';
 import AdminPage from '../layouts/AdminPage';
 import '../assets/App.css';
 import { getAllQuizNotices, getAllEmployees } from '../services/QuizClassesService';
-
+import * as XLSX from 'xlsx';
 const QuizAttendance = () => {
   // Other Info state
   const [showOtherInfoModal, setShowOtherInfoModal] = useState(false);
@@ -75,8 +75,13 @@ const QuizAttendance = () => {
 
       if (editMode && selectedClass) {
         payload.id = selectedClass.id || selectedClass._id;
+        
         await updateAttendance(payload);
       } else {
+        if (!modalData.upazila || !modalData.union || !modalData.voting_center || !modalData.village || !modalData.name || !modalData.father_name || !modalData.categoryName) {
+          alert("Please fill in all required fields.");
+          return;
+        }
         await saveAttendanceFromAdmin(payload);
       }
 
@@ -142,6 +147,10 @@ const QuizAttendance = () => {
 
   const handleOtherInfoSubmit = async () => {
     try {
+      if (!otherInfoData.categoryName || !otherInfoData.categoryType) {
+        alert("Please fill in all fields.");
+        return;
+      }
       await saveOtherInfo(otherInfoData);
       const updatedList = await getAllOtherInfo();
       setOtherInfoList(updatedList);
@@ -153,15 +162,45 @@ const QuizAttendance = () => {
 
   const handleOtherInfoDelete = async (info) => {
     try {
-      await deleteOtherInfo(info._id);
+      await deleteOtherInfo(info);
       setOtherInfoList(prev => prev.filter(i => i._id !== info._id));
+      window.location.reload();
     } catch (err) {
       console.error("Failed to delete other info:", err);
     }
   };
 
   const classNameOptions = ['All', ...Array.from(new Set(pabnaInformation.map(cls => cls.upazila).filter(Boolean)))];
-
+  const handleExport = () => {
+    if (!pabnaInformation.length) {
+      alert("No data to export.");
+      return;
+    }
+  
+    const filteredData = pabnaInformation
+      .filter(att => selectedClassName === 'All' || att.upazila === selectedClassName)
+      .map(att => ({
+        'Upazila': att.upazila || '',
+        'Union': att.union || '',
+        'Voting Center': att.voting_center || '',
+        'Village': att.village || '',
+        'Name': att.name || '',
+        "Father's Name": att.father_name || '',
+        'Category': att.categoryName || '',
+        'Organizational Responsibility': att.organizational_responsibility || '',
+        'Organizational Level': att.organizational_level || '',
+        'Mobile Number': att.mobile_number || '',
+        'Comments': att.comments || ''
+      }));
+  
+    const worksheet = XLSX.utils.json_to_sheet(filteredData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Pabna Info');
+  
+    const fileName = `Pabna_Information_${selectedClassName || 'All'}_${Date.now()}.xlsx`;
+    XLSX.writeFile(workbook, fileName);
+  };
+  
 
   return (
     <>
@@ -172,41 +211,58 @@ const QuizAttendance = () => {
             Information Dashboard
           </h4>
 
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <Form.Select
-              value={selectedClassName}
-              style={{ width: '40%' }}
-              onChange={(e) => setSelectedClassName(e.target.value)}
-            >
-              {classNameOptions.map((name, idx) => (
-                <option key={idx} value={name}>{name}</option>
-              ))}
-            </Form.Select>
+          <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-md-between gap-2 mb-3">
+                <Form.Select
+                  value={selectedClassName}
+                  style={{ width: '100%', maxWidth: '300px' }}
+                  onChange={(e) => setSelectedClassName(e.target.value)}
+                >
+                  {classNameOptions.map((name, idx) => (
+                    <option key={idx} value={name}>{name}</option>
+                  ))}
+                </Form.Select>
 
-            <Button variant="primary" onClick={() => {
-              setShowModal(true);
-              setEditMode(false);
-              setModalData({
-                
-                upazila: '',
-                union: '',
-                voting_center: '',
-                village: '',
-                name: '',
-                father_name: '',
-                categoryName: '',
-                organizational_responsibility: '',
-                organizational_level: '',
-                mobile_number: '',
-                comments: ''
-              });
-            }}>
-              + Add Information
-            </Button>
-            <Button variant="secondary" onClick={() => setShowOtherInfoModal(!showOtherInfoModal)}>
-                Other Info
-              </Button>
-          </div>
+                <Button
+                  variant="primary"
+                  className="w-100 w-md-auto"
+                  onClick={() => {
+                    setShowModal(true);
+                    setEditMode(false);
+                    setModalData({
+                      upazila: '',
+                      union: '',
+                      voting_center: '',
+                      village: '',
+                      name: '',
+                      father_name: '',
+                      categoryName: '',
+                      organizational_responsibility: '',
+                      organizational_level: '',
+                      mobile_number: '',
+                      comments: ''
+                    });
+                  }}
+                >
+                  + Add Information
+                </Button>
+
+                <Button
+                  variant="secondary"
+                  className="w-100 w-md-auto"
+                  onClick={() => setShowOtherInfoModal(!showOtherInfoModal)}
+                >
+                  Other Info
+                </Button>
+
+                <Button
+                  variant="success"
+                  className="w-100 w-md-auto"
+                  onClick={handleExport}
+                >
+                  Export
+                </Button>
+              </div>
+
 
           {showOtherInfoModal && (
             <>
@@ -215,7 +271,7 @@ const QuizAttendance = () => {
                 <Col md={5}>
                   <Form.Control
                     type="text"
-                    placeholder="categoryName"
+                    placeholder="Name"
                     value={otherInfoData.categoryName}
                     onChange={(e) => setOtherInfoData({ ...otherInfoData, categoryName: e.target.value })}
                   />
@@ -250,7 +306,7 @@ const QuizAttendance = () => {
                 </thead>
                 <tbody>
                   {otherInfoList.map((item, idx) => (
-                    <tr key={item._id}>
+                    <tr key={item.id}>
                       <td>{idx + 1}</td>
                       <td>{item.categoryName}</td>
                       <td>{item.categoryType}</td>
@@ -483,14 +539,17 @@ const QuizAttendance = () => {
       <Row className="mb-3">
         <Col>
           <Form.Group>
-            <Form.Label>Category</Form.Label>
+           
             <Form.Select
               value={modalData.categoryName}
               onChange={(e) => setModalData({ ...modalData, categoryName: e.target.value })}
             >
-              <option value="">Select Category</option>
+              <option value=""> ---ক্যাটাগরি---</option>
               {otherInfoList.map((cat, idx) => (
-                <option key={idx} value={cat.categoryName}>{cat.categoryName}</option>
+                cat.categoryType === 'ক্যাটাগরি' && (
+                  <option key={idx} value={cat.categoryName}>{cat.categoryName}</option>
+                )
+                
               ))}
             </Form.Select>
           </Form.Group>
@@ -502,36 +561,38 @@ const QuizAttendance = () => {
       <Row className="mb-3">
           <Col md={6}>
             <Form.Group>
-              <Form.Label>Organizational Responsibility</Form.Label>
+             
               <Form.Control
                 as="select"
                 value={modalData.organizational_responsibility}
                 onChange={(e) => setModalData({ ...modalData, organizational_responsibility: e.target.value })}
               >
-                <option value="">Select Responsibility</option>
-                <option value="President">President</option>
-                <option value="Vice President">Vice President</option>
-                <option value="General Secretary">General Secretary</option>
-                <option value="Treasurer">Treasurer</option>
-                <option value="Member">Member</option>
+              <option value="">---সাংগঠনিক দ্বায়িত্ব---</option>
+              {otherInfoList.map((cat, idx) => (
+                cat.categoryType === 'সাংগঠনিক দ্বায়িত্ব' && (
+                  <option key={idx} value={cat.categoryName}>{cat.categoryName}</option>
+                )
+                
+              ))}
               </Form.Control>
             </Form.Group>
           </Col>
 
           <Col md={6}>
             <Form.Group>
-              <Form.Label>Organizational Level</Form.Label>
+             
               <Form.Control
                 as="select"
                 value={modalData.organizational_level}
                 onChange={(e) => setModalData({ ...modalData, organizational_level: e.target.value })}
               >
-                <option value="">Select Level</option>
-                <option value="Central">Central</option>
-                <option value="District">District</option>
-                <option value="Upazila">Upazila</option>
-                <option value="Union">Union</option>
-                <option value="Ward">Ward</option>
+              <option value="">---সাংগঠনিক মান---</option>
+              {otherInfoList.map((cat, idx) => (
+                cat.categoryType === 'সাংগঠনিক মান' && (
+                  <option key={idx} value={cat.categoryName}>{cat.categoryName}</option>
+                )
+                
+              ))}
               </Form.Control>
             </Form.Group>
           </Col>

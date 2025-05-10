@@ -4,12 +4,12 @@ import { getToken } from "./Auth"; // assumes you have a getToken() function rea
 const BASE_URL = process.env.REACT_APP_API_URL_UserService || `http://${window.location.hostname}:3083`;
 const InsertAttendance = `${BASE_URL}/api/quizAttendance/insert`;
 const InsertAttendanceFromAdmin = `${BASE_URL}/api/student/insertPabna`;
-const updateAttendanceApi= `${BASE_URL}/api/quizAttendance/update`;
-
+const updatePabnaInformationApi= `${BASE_URL}/api/student/updatePabnaInformation`;
 const GetPabnaDropdowndataApi = `${BASE_URL}/api/student/getAllPabna`;
 const GetPabnaInformationApi = `${BASE_URL}/api/student/getAllPabnaInformation`;
 const GetPabnaCategorydataApi = `${BASE_URL}/api/student/getAllCategory`;
-const DeleteAttendance = `${BASE_URL}/api/quizAttendance/delete`;
+const DeletePabnaOtherInfo = `${BASE_URL}/api/student/deleteOtherInfo`;
+const DeleteAttendance = `${BASE_URL}/api/student/deleteInfo`;
 const InsertOtherInfo = `${BASE_URL}/api/student/insertOtherInfo`;
 
 
@@ -109,7 +109,7 @@ const saveAttendanceFromAdmin = async (formData) => {
 const updateAttendance = async (formData) => {
   try {
     const token = await getToken();
-    const response = await axios.post(updateAttendanceApi, formData, {
+    const response = await axios.post(updatePabnaInformationApi, formData, {
       headers: {
         "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json"
@@ -138,9 +138,11 @@ const deleteAttendance = async (data) => {
   }
 };
 const deleteOtherInfo = async (data) => {
+  console.log("data",data)
+  console.log("DeletePabnaOtherInfo",DeletePabnaOtherInfo)
   try {
     const token = await getToken();
-    const response = await axios.post(DeleteAttendance, data, {
+    const response = await axios.post(DeletePabnaOtherInfo, data, {
       headers: {
         "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json"
