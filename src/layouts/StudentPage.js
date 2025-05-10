@@ -64,19 +64,19 @@ const OffCanvasExample = ({ name, ...props }) => {
           {/* Clickable List with Links */}
           <ul className="list-unstyled w-100 px-3">
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
-              <Link to="/QuizSingleNotice" className="text-decoration-none text-reset d-block">Notice</Link>
+              <Link to="/StudentNotice" className="text-decoration-none text-reset d-block">Notice</Link>
             </li>
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
-              <Link to="/QuizSingleAttendance" className="text-decoration-none text-reset d-block">Attendance</Link>
+              <Link to="/StudentAttendance" className="text-decoration-none text-reset d-block">Attendance</Link>
             </li>
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
-              <Link to="/QuizSingleFeedback" className="text-decoration-none text-reset d-block">Feedback</Link>
+              <Link to="/StudentFeedback" className="text-decoration-none text-reset d-block">Feedback</Link>
             </li>
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
-              <Link to="/QuizSingleResult" className="text-decoration-none text-reset d-block">Quiz Result</Link>
+              <Link to="/SingleResult" className="text-decoration-none text-reset d-block">Quiz Result</Link>
             </li>
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
-              <Link to="/QuizSingleLink" className="text-decoration-none text-reset d-block">Class Link</Link>
+              <Link to="/StudentClassLink" className="text-decoration-none text-reset d-block">Class Link</Link>
             </li>
 
              {/* Theme Toggle */}

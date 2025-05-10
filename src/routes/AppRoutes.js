@@ -66,19 +66,19 @@ function App() {
         <Route path="/Permission" element={<ProtectedRoute><Permission /></ProtectedRoute>} />
         <Route path="/AssignPermission" element={<ProtectedRoute><AssignPermission /></ProtectedRoute>} />
         <Route path="/UpdatePermission" element={<ProtectedRoute><UpdatePermission /></ProtectedRoute>} />
-        <Route path="/QuizNotice" element={<ProtectedRoute><QuizNotice /></ProtectedRoute>} />
-        <Route path="/QuizClasses" element={<ProtectedRoute><QuizClasses /></ProtectedRoute>} />
+        <Route path="/Notice" element={<ProtectedRoute><QuizNotice /></ProtectedRoute>} />
+        <Route path="/Classes" element={<ProtectedRoute><QuizClasses /></ProtectedRoute>} />
         <Route path="/QuizResult" element={<ProtectedRoute><QuizResult /></ProtectedRoute>} />
-        <Route path="/Quizlink" element={<ProtectedRoute><Quizlink /></ProtectedRoute>} />
-        <Route path="/QuizSingleNotice" element={<ProtectedRoute><QuizSingleNotice /></ProtectedRoute>} />
-        <Route path="/QuizSingleResult" element={<ProtectedRoute><QuizSingleResult /></ProtectedRoute>} />
-        <Route path="/QuizSinglelink" element={<ProtectedRoute><QuizSinglelink /></ProtectedRoute>} />
-        <Route path="/QuizSingleAttendance" element={<ProtectedRoute><QuizSingleAttendance /></ProtectedRoute>} />
-        <Route path="/QuizSingleFeedback" element={<ProtectedRoute><QuizSingleFeedback /></ProtectedRoute>} />
+        <Route path="/Classlink" element={<ProtectedRoute><Quizlink /></ProtectedRoute>} />
+        <Route path="/StudentNotice" element={<ProtectedRoute><QuizSingleNotice /></ProtectedRoute>} />
+        <Route path="/SingleResult" element={<ProtectedRoute><QuizSingleResult /></ProtectedRoute>} />
+        <Route path="/StudentClasslink" element={<ProtectedRoute><QuizSinglelink /></ProtectedRoute>} />
+        <Route path="/StudentAttendance" element={<ProtectedRoute><QuizSingleAttendance /></ProtectedRoute>} />
+        <Route path="/StudentFeedback" element={<ProtectedRoute><QuizSingleFeedback /></ProtectedRoute>} />
         <Route path="/TestPage" element={<ProtectedRoute><TestPage /></ProtectedRoute>} />
-        <Route path="/QuizAttendance" element={<ProtectedRoute><QuizAttendance /></ProtectedRoute>} />
+        <Route path="/ClassAttendance" element={<ProtectedRoute><QuizAttendance /></ProtectedRoute>} />
         <Route path="/Pabna" element={<ProtectedRoute><Pabna /></ProtectedRoute>} />
-        <Route path="/QuizFeedback" element={<ProtectedRoute><QuizFeedback /></ProtectedRoute>} />
+        <Route path="/ClassFeedback" element={<ProtectedRoute><QuizFeedback /></ProtectedRoute>} />
 
       </Routes>
       </RoleProvider>

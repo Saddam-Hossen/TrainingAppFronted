@@ -63,22 +63,22 @@ const OffCanvasExample = ({ name, ...props }) => {
 
           <ul className="list-unstyled w-100 px-3">
           <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
-              <Link to="/QuizNotice" className="custom-link">Notice</Link>
+              <Link to="/Notice" className="custom-link">Notice</Link>
             </li>
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
-              <Link to="/QuizClasses" className="custom-link">Classes</Link>
+              <Link to="/Classes" className="custom-link">Classes</Link>
             </li>
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
               <Link to="/QuizResult" className="custom-link">Quiz Result</Link>
             </li>
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
-              <Link to="/QuizFeedback" className="custom-link">Class Feedback</Link>
+              <Link to="/ClassFeedback" className="custom-link">Class Feedback</Link>
             </li>
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
-              <Link to="/QuizLink" className="custom-link">Class Link</Link>
+              <Link to="/ClassLink" className="custom-link">Class Link</Link>
             </li>
             <li className="custom-list-item text-start py-2 px-3 mb-2 rounded">
-              <Link to="/QuizAttendance" className="custom-link">Attendance</Link>
+              <Link to="/ClassAttendance" className="custom-link">Attendance</Link>
             </li>
 
             {/* Theme Toggle */}
