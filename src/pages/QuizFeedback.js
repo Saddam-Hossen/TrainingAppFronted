@@ -6,19 +6,20 @@ import { getAllQuizFeedback, saveQuizFeedback } from '../services/QuizSingleFeed
 import moment from 'moment';
 import AdminPage from '../layouts/AdminPage';
 import '../assets/App.css'; // Adjust the path if needed
+import * as XLSX from 'xlsx';
 
 const QuizSingleFeedback = () => {
   const [notices, setNotices] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [updatedFeedback, setUpdatedFeedback] = useState({ rating: '', comment: '' });
+  const [selectedClassName, setSelectedClassName] = useState('');
 
   useEffect(() => {
     const fetchNotices = async () => {
       try {
         const data = await getAllQuizFeedback();
         data.sort((a, b) => new Date(b.dateTime) - new Date(a.dateTime));
-
         setNotices(data);
       } catch (err) {
         console.error("❌ Error fetching quiz feedback:", err);
@@ -63,6 +64,29 @@ const QuizSingleFeedback = () => {
     }
   };
 
+  const uniqueClassNames = [...new Set(notices.map(cls => cls.className))];
+  const filteredClasses = selectedClassName
+    ? notices.filter(cls => cls.className === selectedClassName)
+    : notices;
+
+  const handleExport = () => {
+    const dataToExport = filteredClasses.map(({ idNumber, className, classNumber, trainerName, rating, comment }) => ({
+      'ID No.': idNumber,
+      'Class Name': className,
+      'Class No.': classNumber,
+      'Trainer': trainerName,
+      'Rating': rating,
+      'Comment': comment,
+     
+      
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Feedback');
+    XLSX.writeFile(workbook, `quiz_feedback_${selectedClassName || 'all'}.xlsx`);
+  };
+
   return (
     <>
       <AdminPage />
@@ -72,55 +96,57 @@ const QuizSingleFeedback = () => {
             <BsChatLeftTextFill className="me-2" size={20} />
             Class Feedback
           </h4>
+          <div className="d-flex align-items-center gap-3 mb-3" style={{ width: '40%' }}>
+            <Form.Select
+              value={selectedClassName}
+              onChange={(e) => setSelectedClassName(e.target.value)}
+              style={{ flex: 1 }}
+            >
+              <option value="">All Classes</option>
+              {uniqueClassNames.map((name, idx) => (
+                <option key={idx} value={name}>{name}</option>
+              ))}
+            </Form.Select>
+            <Button variant="success" onClick={handleExport}>Export</Button>
+          </div>
 
-          {notices.length === 0 ? (
+          {filteredClasses.length === 0 ? (
             <p className="text-muted text-center">No feedback available at the moment.</p>
           ) : (
             <div className="table-container">
-            <Table
-               striped
-               bordered
-               hover
-               responsive="sm"
-               className="custom-table"
-             >
+              <Table striped bordered hover responsive="sm" className="custom-table">
                 <thead className="table-light">
                   <tr>
                     <th style={{ width: '5%' }}>#</th>
                     <th style={{ width: '15%' }}>ID No.</th>
-                 
                     <th style={{ width: '15%' }}>Class Name</th>
                     <th style={{ width: '10%' }}>Class No.</th>
                     <th style={{ width: '15%' }}>Trainer</th>
                     <th style={{ width: '10%' }}>Rating</th>
-                    <th style={{ width: '20%' }}>Comment</th>
+                    <th style={{ width: '35%' }}>Comment</th>
                    
                   </tr>
                 </thead>
                 <tbody>
-                  {notices.map((notice, index) => {
-                    const isBeforeClassTime = moment().isBefore(moment(notice.dateTime, "YYYY-MM-DDTHH:mm"));
-                    return (
-                      <tr key={notice.id || index}>
-                        <td>{index + 1}</td>
-                        <td>{notice.idNumber}</td>
-                      
-                        <td>{notice.className}</td>
-                        <td>{notice.classNumber}</td>
-                        <td>{notice.trainerName}</td>
-                        <td>{notice.rating}</td>
-                        <td className="text-start">
-                          {notice.comment?.split('\n').map((line, idx) => (
-                            <React.Fragment key={idx}>
-                              {line}
-                              <br />
-                            </React.Fragment>
-                          ))}
-                        </td>
-                       
-                      </tr>
-                    );
-                  })}
+                  {filteredClasses.map((notice, index) => (
+                    <tr key={notice.id || index}>
+                      <td>{index + 1}</td>
+                      <td>{notice.idNumber}</td>
+                      <td>{notice.className}</td>
+                      <td>{notice.classNumber}</td>
+                      <td>{notice.trainerName}</td>
+                      <td>{notice.rating}</td>
+                      <td className="text-start">
+                        {notice.comment?.split('\n').map((line, idx) => (
+                          <React.Fragment key={idx}>
+                            {line}
+                            <br />
+                          </React.Fragment>
+                        ))}
+                      </td>
+                     
+                    </tr>
+                  ))}
                 </tbody>
               </Table>
             </div>
@@ -128,7 +154,7 @@ const QuizSingleFeedback = () => {
         </Card>
       </Container>
 
-      {/* Modal */}
+      {/* Modal for editing feedback */}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Add Feedback</Modal.Title>
@@ -156,9 +182,7 @@ const QuizSingleFeedback = () => {
                 onChange={(e) => setUpdatedFeedback({ ...updatedFeedback, comment: e.target.value })}
               />
             </Form.Group>
-            <Button variant="success" onClick={handleUpdateFeedback}>
-              Save
-            </Button>
+            <Button variant="success" onClick={handleUpdateFeedback}>Save</Button>
           </Form>
         </Modal.Body>
       </Modal>

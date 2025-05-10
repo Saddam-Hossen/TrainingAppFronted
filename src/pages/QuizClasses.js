@@ -4,6 +4,8 @@ import Navbar from "../layouts/Navbar";
 import { saveQuizNotice, getAllQuizNotices, deleteQuizClasses } from '../services/QuizClassesService';
 import { FaTrash } from 'react-icons/fa'; // Import the Trash icon
 import AdminPage from '../layouts/AdminPage';
+import * as XLSX from 'xlsx';
+
 const QuizClasses = () => {
     const [show, setShow] = useState(false);
     const [notices, setNotices] = useState([]);
@@ -83,7 +85,26 @@ const QuizClasses = () => {
         const date = new Date(datetime);
         return new Intl.DateTimeFormat('en-GB', options).format(date);
     };
-
+    const handleExport = () => {
+        if (notices.length === 0) {
+          alert("No data to export.");
+          return;
+        }
+      
+        const dataToExport = notices.map(({ className, classNumber, trainerName, datetime }) => ({
+          Class_Name: className,
+          Class_Number: classNumber,
+          Trainer_Name: trainerName,
+          Class_Date_Time: new Date(datetime).toLocaleString()
+        }));
+      
+        const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Quiz Classes');
+      
+        XLSX.writeFile(workbook, 'quiz_classes_export.xlsx');
+      };
+      
     return (
         <>
             <AdminPage />
@@ -91,6 +112,8 @@ const QuizClasses = () => {
             <Button variant="primary" onClick={handleShow} style={{ marginBottom: "20px" }}>
                 Add Class
                 </Button>
+
+                 <Button variant="success" onClick={handleExport} style={{ marginBottom: "20px",marginLeft:"20px" }}>Export</Button>
 
                 {/* Modal */}
                 <Modal show={show} onHide={handleClose}>

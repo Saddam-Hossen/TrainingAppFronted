@@ -9,7 +9,7 @@ import moment from 'moment-timezone';
 import AdminPage from '../layouts/AdminPage';
 import '../assets/App.css';
 import { getAllQuizNotices, getAllEmployees } from '../services/QuizClassesService';
-
+import * as XLSX from 'xlsx';
 const QuizAttendance = () => {
   const [students, setStudents] = useState([]);
   const [totalClasses, setTotalClasses] = useState([]);
@@ -104,9 +104,33 @@ const QuizAttendance = () => {
 
   const classNameOptions = ['All', ...Array.from(new Set(classes.map(cls => cls.className).filter(Boolean)))];
 
-  const filteredClassNumbers = totalClasses
+  const filteredClassNumbers = classes
     .filter(cls => cls.className === modalData.className)
     .map(cls => cls.classNumber);
+
+    const handleExport = () => {
+      const filteredData = selectedClassName === 'All'
+        ? classes
+        : classes.filter(att => att.className === selectedClassName);
+    
+      const dataToExport = filteredData.map(({ className, classNumber, idNumber, status, lateReason, datetime, createDatetime }) => ({
+        Class_Name: className,
+        Class_Number: classNumber,
+        ID_Number: idNumber,
+        Status: status,
+        Late_Reason: lateReason,
+        Class_Join_Time: new Date(datetime).toLocaleString(),
+        Attendance_Submit_Time: new Date(createDatetime).toLocaleString()
+      }));
+    
+      const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Attendance');
+    
+      XLSX.writeFile(workbook, `quiz_attendance_${selectedClassName || 'all_classes'}.xlsx`);
+    };
+    
+  
 
   return (
     <>
@@ -118,32 +142,45 @@ const QuizAttendance = () => {
             Attendance Dashboard
           </h4>
 
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <Form.Select
-              value={selectedClassName}
-              style={{ width: '40%' }}
-              onChange={(e) => setSelectedClassName(e.target.value)}
-            >
-              {classNameOptions.map((name, idx) => (
-                <option key={idx} value={name}>{name}</option>
-              ))}
-            </Form.Select>
+          <div className="d-flex flex-column flex-md-row justify-content-start align-items-start gap-2 mb-3">
+                <Form.Select
+                  value={selectedClassName}
+                  style={{ width: '100%', maxWidth: '300px' }}
+                  onChange={(e) => setSelectedClassName(e.target.value)}
+                >
+                  {classNameOptions.map((name, idx) => (
+                    <option key={idx} value={name}>{name}</option>
+                  ))}
+                </Form.Select>
 
-            <Button variant="primary" onClick={() => {
-              setShowModal(true);
-              setEditMode(false);
-              setModalData({
-                datetime: '',
-                className: '',
-                classNumber: '',
-                idNumber: '',
-                lateReason: '',
-                createDatetime: ''
-              });
-            }}>
-              + Add Attendance
-            </Button>
-          </div>
+                <Button
+                  variant="success"
+                  style={{ width: '60%', maxWidth: '200px' }}
+                  onClick={handleExport}
+                >
+                  Export
+                </Button>
+
+                <Button
+                  variant="primary"
+                  style={{ width: '60%', maxWidth: '200px' }}
+                  onClick={() => {
+                    setShowModal(true);
+                    setEditMode(false);
+                    setModalData({
+                      datetime: '',
+                      className: '',
+                      classNumber: '',
+                      idNumber: '',
+                      lateReason: '',
+                      createDatetime: ''
+                    });
+                  }}
+                >
+                  + Add Attendance
+                </Button>
+              </div>
+
 
           {classes.length === 0 ? (
             <p className="text-muted text-center">No attendance records yet.</p>

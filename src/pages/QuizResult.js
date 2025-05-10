@@ -107,6 +107,25 @@ const QuizResult = () => {
         ? classes.filter(cls => cls.className === selectedClassName)
         : classes;
 
+
+        const handleExport = () => {
+            const dataToExport = filteredClasses.map(({ className, classNumber, idNumber, totalMarks, obtainMarks, merit }) => ({
+                className,
+                classNumber,
+                idNumber,
+                totalMarks,
+                obtainMarks,
+                merit
+            }));
+        
+            const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Results');
+        
+            XLSX.writeFile(workbook, 'quiz_results.xlsx');
+        };
+        
+
     return (
         <>
             <AdminPage />
@@ -123,7 +142,9 @@ const QuizResult = () => {
                             <option key={idx} value={name}>{name}</option>
                         ))}
                     </Form.Select>
+                    <Button variant="success" onClick={handleExport}>Export</Button>
                 </div>
+            
 
                 <Modal show={show} onHide={handleClose} size="lg">
                     <Modal.Header closeButton>
