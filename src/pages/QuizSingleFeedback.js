@@ -105,15 +105,15 @@ const QuizSingleFeedback = () => {
                         <td>{moment(notice.dateTime, "YYYY-MM-DDTHH:mm").format('YYYY-MM-DD hh:mm A')}</td>
                         <td>{notice.className}</td>
                         <td>{notice.classNumber}</td>
-                        <td>{notice.trainerName}</td>
-                        <td>{notice.rating}</td>
+                        <td>{notice.trainerName }</td>
+                        <td>{notice.rating || '-'}</td>
                         <td className="text-start">
                           {notice.comment?.split('\n').map((line, idx) => (
                             <React.Fragment key={idx}>
                               {line}
                               <br />
                             </React.Fragment>
-                          ))}
+                          )) || '-'}
                         </td>
                         <td>
                           <Button

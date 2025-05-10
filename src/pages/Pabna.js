@@ -4,13 +4,28 @@ import { BsClipboardCheck } from 'react-icons/bs';
 import { BiEdit } from 'react-icons/bi';
 import { MdDelete } from 'react-icons/md';
 import Navbar from "../layouts/SingleNavbar";
-import { getAllDropdownData,getAllCategory,getAllPabnaInformation, saveAttendanceFromAdmin, deleteAttendance, updateAttendance } from '../services/PabnaService';
+import {
+  getAllDropdownData,
+  getAllCategory,
+  getAllPabnaInformation,
+  saveAttendanceFromAdmin,
+  deleteAttendance,
+  updateAttendance,
+  saveOtherInfo,
+  getAllOtherInfo,
+  deleteOtherInfo
+} from '../services/PabnaService';
 import moment from 'moment-timezone';
 import AdminPage from '../layouts/AdminPage';
 import '../assets/App.css';
 import { getAllQuizNotices, getAllEmployees } from '../services/QuizClassesService';
 
 const QuizAttendance = () => {
+  // Other Info state
+  const [showOtherInfoModal, setShowOtherInfoModal] = useState(false);
+  const [otherInfoData, setOtherInfoData] = useState({ categoryName: '', categoryType: '' });
+  const [otherInfoList, setOtherInfoList] = useState([]);
+
   const [students, setStudents] = useState([]);
   const[pabnaInformation, setPabnaInformation] = useState([]);
   const [totalCategory, setTotalCategory] = useState([]);
@@ -38,7 +53,8 @@ const QuizAttendance = () => {
     const fetchData = async () => {
       try {
         setClasses(await getAllDropdownData());
-        setTotalCategory(await getAllCategory());
+       // setTotalCategory(await getAllCategory());
+        setOtherInfoList(await getAllOtherInfo());
         setPabnaInformation(await getAllPabnaInformation());
        
       } catch (err) {
@@ -124,6 +140,26 @@ const QuizAttendance = () => {
     }
   };
 
+  const handleOtherInfoSubmit = async () => {
+    try {
+      await saveOtherInfo(otherInfoData);
+      const updatedList = await getAllOtherInfo();
+      setOtherInfoList(updatedList);
+      setOtherInfoData({ categoryName: '', categoryType: '' });
+    } catch (err) {
+      console.error("Failed to save other info:", err);
+    }
+  };
+
+  const handleOtherInfoDelete = async (info) => {
+    try {
+      await deleteOtherInfo(info._id);
+      setOtherInfoList(prev => prev.filter(i => i._id !== info._id));
+    } catch (err) {
+      console.error("Failed to delete other info:", err);
+    }
+  };
+
   const classNameOptions = ['All', ...Array.from(new Set(pabnaInformation.map(cls => cls.upazila).filter(Boolean)))];
 
 
@@ -148,7 +184,6 @@ const QuizAttendance = () => {
             </Form.Select>
 
             <Button variant="primary" onClick={() => {
-              console.log(classes)
               setShowModal(true);
               setEditMode(false);
               setModalData({
@@ -168,7 +203,66 @@ const QuizAttendance = () => {
             }}>
               + Add Information
             </Button>
+            <Button variant="secondary" onClick={() => setShowOtherInfoModal(!showOtherInfoModal)}>
+                Other Info
+              </Button>
           </div>
+
+          {showOtherInfoModal && (
+            <>
+              <h5 className="mt-4">Other Info</h5>
+              <Row className="mb-3">
+                <Col md={5}>
+                  <Form.Control
+                    type="text"
+                    placeholder="categoryName"
+                    value={otherInfoData.categoryName}
+                    onChange={(e) => setOtherInfoData({ ...otherInfoData, categoryName: e.target.value })}
+                  />
+                </Col>
+                <Col md={5}>
+                    <Form.Group controlId="formType">
+                      <Form.Select
+                        value={otherInfoData.categoryType}
+                        onChange={(e) => setOtherInfoData({ ...otherInfoData, categoryType: e.target.value })}
+                      >
+                        <option value="">-- নির্বাচন করুন --</option>
+                        <option value="সাংগঠনিক দ্বায়িত্ব">সাংগঠনিক দ্বায়িত্ব</option>
+                        <option value="সাংগঠনিক মান">সাংগঠনিক মান</option>
+                        <option value="ক্যাটাগরি">ক্যাটাগরি</option>
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+
+                <Col md={2}>
+                  <Button variant="success" onClick={handleOtherInfoSubmit}>Add</Button>
+                </Col>
+              </Row>
+
+              <Table striped bordered size="sm">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {otherInfoList.map((item, idx) => (
+                    <tr key={item._id}>
+                      <td>{idx + 1}</td>
+                      <td>{item.categoryName}</td>
+                      <td>{item.categoryType}</td>
+                      <td>
+                        <Button size="sm" variant="danger" onClick={() => handleOtherInfoDelete(item)}>Delete</Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </>
+          )}
 
           {classes.length === 0 ? (
             <p className="text-muted text-center">No records yet.</p>
@@ -223,6 +317,8 @@ const QuizAttendance = () => {
           )}
         </Card>
       </Container>
+
+     
 
       <Modal show={showModal} onHide={() => {
   setShowModal(false);
@@ -393,7 +489,7 @@ const QuizAttendance = () => {
               onChange={(e) => setModalData({ ...modalData, categoryName: e.target.value })}
             >
               <option value="">Select Category</option>
-              {totalCategory.map((cat, idx) => (
+              {otherInfoList.map((cat, idx) => (
                 <option key={idx} value={cat.categoryName}>{cat.categoryName}</option>
               ))}
             </Form.Select>

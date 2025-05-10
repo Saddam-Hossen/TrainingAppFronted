@@ -70,7 +70,7 @@ const QuizResult = () => {
                 setExcelData([]);
                 return;
             }
-
+       
             setExcelData(jsonData);
         };
 
@@ -80,6 +80,7 @@ const QuizResult = () => {
     const handleSaveAll = async () => {
         try {
             for (const record of excelData) {
+                console.log('Excel Data:', record);
                 await saveClass(record);
             }
             const updatedClasses = await getAllClasses();
@@ -166,6 +167,7 @@ const QuizResult = () => {
                     <Table striped bordered hover responsive="sm" className="custom-table">
                         <thead className="table-light">
                             <tr>
+                                <th>#</th>
                                 <th>Class Name</th>
                                 <th>Class Number</th>
                                 <th>Student ID</th>
@@ -179,6 +181,7 @@ const QuizResult = () => {
                             {filteredClasses.length > 0 ? (
                                 filteredClasses.map((cls, index) => (
                                     <tr key={index}>
+                                        <td>{index + 1}</td>
                                         <td>{cls.className}</td>
                                         <td>{cls.classNumber}</td>
                                         <td>{cls.idNumber}</td>

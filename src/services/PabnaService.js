@@ -10,8 +10,10 @@ const GetPabnaDropdowndataApi = `${BASE_URL}/api/student/getAllPabna`;
 const GetPabnaInformationApi = `${BASE_URL}/api/student/getAllPabnaInformation`;
 const GetPabnaCategorydataApi = `${BASE_URL}/api/student/getAllCategory`;
 const DeleteAttendance = `${BASE_URL}/api/quizAttendance/delete`;
+const InsertOtherInfo = `${BASE_URL}/api/student/insertOtherInfo`;
 
-const getAllCategory = async () => {
+
+const getAllOtherInfo = async () => {
   try {
     const token = await getToken();
     const response = await axios.get(GetPabnaCategorydataApi, {
@@ -73,6 +75,22 @@ const saveAttendance = async (formData) => {
     throw error;
   }
 };
+
+const saveOtherInfo = async (formData) => {
+  try {
+    const token = await getToken();
+    const response = await axios.post(InsertOtherInfo, formData, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("❌ Error saving attendance:", error);
+    throw error;
+  }
+};
 const saveAttendanceFromAdmin = async (formData) => {
   try {
     const token = await getToken();
@@ -119,5 +137,22 @@ const deleteAttendance = async (data) => {
     throw error;
   }
 };
+const deleteOtherInfo = async (data) => {
+  try {
+    const token = await getToken();
+    const response = await axios.post(DeleteAttendance, data, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("❌ Error deleting attendance:", error);
+    throw error;
+  }
+};
 
-export { getAllDropdownData,getAllPabnaInformation, saveAttendance, deleteAttendance,getAllCategory,updateAttendance,saveAttendanceFromAdmin };
+export { getAllDropdownData,getAllPabnaInformation, saveAttendance, deleteAttendance,updateAttendance,saveAttendanceFromAdmin,saveOtherInfo,
+  getAllOtherInfo,
+  deleteOtherInfo };

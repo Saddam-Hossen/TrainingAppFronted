@@ -56,9 +56,9 @@ const QuizSingleResult = () => {
                       <td>{index + 1}</td>
                       <td>{cls.className}</td>
                       <td>{cls.classNumber}</td>
-                      <td>{cls.totalMarks}</td>
-                      <td>{cls.obtainMarks}</td>
-                      <td>{cls.merit}</td>
+                      <td>{cls.totalMarks || '-'}</td>
+                      <td>{cls.obtainMarks || '-'}</td>
+                      <td>{cls.merit || '-'}</td>
                     </tr>
                   ))}
                 </tbody>
