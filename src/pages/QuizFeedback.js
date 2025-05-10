@@ -5,7 +5,7 @@ import SingleNavbar from "../layouts/SingleNavbar";
 import { getAllQuizFeedback, saveQuizFeedback } from '../services/QuizSingleFeedbackService';
 import moment from 'moment';
 import AdminPage from '../layouts/AdminPage';
-import '../assets/App.css'; // Adjust the path if needed
+import '../assets/App.css';
 import * as XLSX from 'xlsx';
 
 const QuizSingleFeedback = () => {
@@ -25,7 +25,6 @@ const QuizSingleFeedback = () => {
         console.error("❌ Error fetching quiz feedback:", err);
       }
     };
-
     fetchNotices();
   }, []);
 
@@ -47,7 +46,6 @@ const QuizSingleFeedback = () => {
   const handleUpdateFeedback = async () => {
     try {
       if (!selectedFeedback) return;
-
       const updatedData = {
         feedbackId: selectedFeedback.id,
         className: selectedFeedback.className,
@@ -55,7 +53,6 @@ const QuizSingleFeedback = () => {
         trainerName: selectedFeedback.trainerName,
         ...updatedFeedback
       };
-
       await saveQuizFeedback(updatedData);
       window.location.reload();
       handleCloseModal();
@@ -77,29 +74,40 @@ const QuizSingleFeedback = () => {
       'Trainer': trainerName,
       'Rating': rating,
       'Comment': comment,
-     
-      
     }));
-
     const worksheet = XLSX.utils.json_to_sheet(dataToExport);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Feedback');
     XLSX.writeFile(workbook, `quiz_feedback_${selectedClassName || 'all'}.xlsx`);
   };
 
+  // Group by className + classNumber
+  const groupedData = [];
+  const groupMap = new Map();
+
+  filteredClasses.forEach((item) => {
+    const key = `${item.className}_${item.classNumber}`;
+    if (!groupMap.has(key)) {
+      groupMap.set(key, []);
+    }
+    groupMap.get(key).push(item);
+  });
+
+  groupMap.forEach((group, key) => {
+    groupedData.push({ key, rows: group });
+  });
+
   return (
     <>
       <AdminPage />
       <Container className="mt-0 pt-5">
-        <Card className="globalDiv shadow-sm p-3 p-md-4 ">
+        <Card className="globalDiv shadow-sm p-3 p-md-4">
           <h4 className="mb-4 d-flex align-items-center text-primary fs-5 fs-md-4">
             <BsChatLeftTextFill className="me-2" size={20} />
             Class Feedback
           </h4>
-         <div
-          className="globalDiv d-flex flex-column flex-md-row align-items-stretch gap-3 mb-3"
-          style={{ width: '100%' }}
-        >
+
+          <div className="globalDiv d-flex flex-column flex-md-row align-items-stretch gap-3 mb-3" style={{ width: '100%' }}>
             <Form.Select
               value={selectedClassName}
               onChange={(e) => setSelectedClassName(e.target.value)}
@@ -121,35 +129,42 @@ const QuizSingleFeedback = () => {
                 <thead className="table-light">
                   <tr>
                     <th style={{ width: '5%' }}>#</th>
-                    <th style={{ width: '15%' }}>ID No.</th>
+                    
                     <th style={{ width: '15%' }}>Class Name</th>
                     <th style={{ width: '10%' }}>Class No.</th>
+                    <th style={{ width: '15%' }}>ID No.</th>
                     <th style={{ width: '15%' }}>Trainer</th>
                     <th style={{ width: '10%' }}>Rating</th>
                     <th style={{ width: '35%' }}>Comment</th>
-                   
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredClasses.map((notice, index) => (
-                    <tr key={notice.id || index}>
-                      <td>{index + 1}</td>
-                      <td>{notice.idNumber}</td>
-                      <td>{notice.className}</td>
-                      <td>{notice.classNumber}</td>
-                      <td>{notice.trainerName}</td>
-                      <td>{notice.rating}</td>
-                      <td className="text-start">
-                        {notice.comment?.split('\n').map((line, idx) => (
-                          <React.Fragment key={idx}>
-                            {line}
-                            <br />
-                          </React.Fragment>
-                        ))}
-                      </td>
-                     
-                    </tr>
-                  ))}
+                  {groupedData.map((group, groupIndex) => {
+                    return group.rows.map((notice, rowIndex) => (
+                      <tr key={notice.id || `${group.key}_${rowIndex}`}>
+                        <td>{groupIndex + rowIndex + 1}</td>
+                       
+                        {rowIndex === 0 && (
+                          <>
+                            <td rowSpan={group.rows.length}  style={{ textAlign: 'center', verticalAlign: 'middle' }}>{notice.className}</td>
+                            <td rowSpan={group.rows.length}  style={{ textAlign: 'center', verticalAlign: 'middle' }}>{notice.classNumber}</td>
+                          </>
+                        )}
+                        {rowIndex !== 0 && null}
+                         <td>{notice.idNumber}</td>
+                        <td>{notice.trainerName}</td>
+                        <td>{notice.rating}</td>
+                        <td className="text-start">
+                          {notice.comment?.split('\n').map((line, idx) => (
+                            <React.Fragment key={idx}>
+                              {line}
+                              <br />
+                            </React.Fragment>
+                          ))}
+                        </td>
+                      </tr>
+                    ));
+                  })}
                 </tbody>
               </Table>
             </div>
